@@ -33,14 +33,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
-
-      - name: Build JAR with Gradle
-        id: build
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: clean build
+      - name: Build all JARs with Gradle
+        run: ./build.sh
 
       - run: pwd
       - run: ls -all
