@@ -14,7 +14,7 @@
     @template.product.head.favicon()
 
 </head>
-<body data-boundary-page="product-decide">
+<body data-boundary-page="decide">
 @template.product.include.inculde(url = "/navigation/fragments/v1/header")
 
 @template.product.productpage.ProductDetails(productDetailsView = productPageView.productDetailsView)

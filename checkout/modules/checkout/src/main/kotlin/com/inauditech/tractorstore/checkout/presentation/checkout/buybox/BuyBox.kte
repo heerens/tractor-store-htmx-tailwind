@@ -3,7 +3,7 @@
 @param buyBoxView: BuyBoxView
 
 <form hx-put="/checkout/fragments/v1/buybox">
-    <div data-boundary="checkout-checkout" class="p-4 mb-8">
+    <div data-boundary="checkout" class="p-4 mb-8">
         <div class="flex justify-between mb-8">
             <div>${buyBoxView.variant.price} Ø</div>
             <div>

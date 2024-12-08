@@ -13,7 +13,7 @@
     @template.checkout.head.favicon()
 
 </head>
-<body data-boundary-page="checkout-checkout">
+<body data-boundary-page="checkout">
 @template.checkout.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px mb-8">

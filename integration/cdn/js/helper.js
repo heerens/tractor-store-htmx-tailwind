@@ -1,12 +1,12 @@
 const teamColors = {
-  "navigation-explore": { stroke: "#FF5A54", text: "#fff" },
-  "product-decide": { stroke: "#53FF90", text: "#000" },
-  "checkout-checkout": { stroke: "#FFDE54", text: "#000" },
-  "discovery-inspire": { stroke: "#F64DFF", text: "#fff" },
+  "explore": { stroke: "#FF5A54", text: "#fff" },
+  "decide": { stroke: "#53FF90", text: "#000" },
+  "checkout": { stroke: "#FFDE54", text: "#000" },
+  "inspire": { stroke: "#F64DFF", text: "#fff" },
 };
 
-const teams = ["navigation-explore", "product-decide", "checkout-checkout", "discovery-inspire"]
-const domains = ["navigation-explore", "product-decide", "checkout-checkout", "discovery-inspire"]
+const teams = ["explore", "decide", "checkout", "inspire"]
+const domains = ["explore", "decide", "checkout", "inspire"]
 /**
  * Sets the basic styles.
  */

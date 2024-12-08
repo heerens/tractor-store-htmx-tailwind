@@ -1,7 +1,7 @@
 
 
 
-<footer class="ts-container mt-12 overflow-hidden pt-10" data-boundary="navigation-explore">
+<footer class="ts-container mt-12 overflow-hidden pt-10" data-boundary="explore">
     <div class="flex flex-wrap nav-shadow-b pt-6 pb-12 px-6 border-t border-gray-200">
         <div class="w-full lg:w-1/2 mb-8 flex items-start gap-x-4">
             <!-- please leave this part untouched -->

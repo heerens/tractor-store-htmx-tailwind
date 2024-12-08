@@ -4,7 +4,7 @@
 
 
 <div  class="z-10 text-left fixed inset-0 flex items-center justify-center backdrop-filter backdrop-blur-sm bg-opacity-75">
-    <div class="bg-white rounded-2xl shadow-lg p-6 " data-boundary="navigation-explore" >
+    <div class="bg-white rounded-2xl shadow-lg p-6 " data-boundary="explore" >
 
 
             <h2 class="mb-4 text-2xl">Stores</h2>

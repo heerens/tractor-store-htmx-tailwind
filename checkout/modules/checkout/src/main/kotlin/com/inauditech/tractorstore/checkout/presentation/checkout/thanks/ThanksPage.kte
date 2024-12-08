@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 </head>
-<body data-boundary-page="checkout-checkout">
+<body data-boundary-page="checkout">
 @template.checkout.include.inculde(url = "/navigation/fragments/v1/header")
 
 

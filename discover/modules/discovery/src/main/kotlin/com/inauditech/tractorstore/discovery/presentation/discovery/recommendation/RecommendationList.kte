@@ -3,7 +3,7 @@
 
 @param recommendationListViews: List<RecommendationListView>
 
-<div class="p-6" data-boundary="discovery-inspire">
+<div class="p-6" data-boundary="inspire">
     <h2 class="mb-4 text-2xl">Recommendations</h2>
     <div class="flex gap-x-8">
         @for(entryLoop in ForSupport.of(recommendationListViews))

@@ -4,7 +4,7 @@
     }
 </style>
 
-<header class="ts-container mb-6 mt-4 overflow-hidden pb-10" data-boundary="navigation-explore">
+<header class="ts-container mb-6 mt-4 overflow-hidden pb-10" data-boundary="explore">
     <div class="flex justify-between items-center flex-wrap nav-shadow-b pt-2 pb-6 px-4 border-b border-gray-200">
         <div class="w-1/2 lg:w-64">
             <a href="/">

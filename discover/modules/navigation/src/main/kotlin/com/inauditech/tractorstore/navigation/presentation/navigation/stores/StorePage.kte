@@ -14,7 +14,7 @@
     @template.navigation.head.favicon()
 
 </head>
-<body data-boundary-page="navigation-explore">
+<body data-boundary-page="explore">
 @template.navigation.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px">

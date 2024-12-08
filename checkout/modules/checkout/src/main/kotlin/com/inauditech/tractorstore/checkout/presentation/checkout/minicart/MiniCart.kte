@@ -53,7 +53,7 @@
         toggleHighlight();
     })
 </script>
-<div data-boundary="checkout-checkout" class="p-6">
+<div data-boundary="checkout" class="p-6">
         <a id="cart-button" href="/checkout/cart" class="group rounded-full border-2 border-gray-200 shadow-sm shadow-transparent p-3 flex items-center justify-center bg-white transition-all duration-200 hover:shadow-gray-200 hover:bg-gray-100 hover:border-gray-300 focus-within:outline-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
                 <g clip-path="url(#a)">

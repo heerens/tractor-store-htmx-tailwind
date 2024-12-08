@@ -2,7 +2,7 @@
 
 @param storeView: StoreView? = null
 
-<div id="hx-store-picker" class="p-6" data-boundary="navigation-explore">
+<div id="hx-store-picker" class="p-6" data-boundary="explore">
     <div>
     @if(storeView != null)
         <div class="w-48 mb-6">
