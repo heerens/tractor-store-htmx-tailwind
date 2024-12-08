@@ -1,0 +1,29 @@
+@import com.inauditech.tractorstore.navigation.presentation.navigation.stores.StoreView
+
+@param storeView: StoreView? = null
+
+<div id="hx-store-picker" class="p-6" data-boundary="navigation-explore">
+    <div>
+    @if(storeView != null)
+        <div class="w-48 mb-6">
+            <div class="mb-4">
+                @template.navigation.image.Image(imageView = storeView.imageView, classNames = "w-100")
+            </div>
+            <div class="">${storeView.store.name}</div>
+            <div class="">${storeView.store.street}</div>
+            <div class="">${storeView.store.city}</div>
+        </div>
+    @endif
+    <div hx-get="/navigation/fragments/v1/storepicker/modal"
+         hx-target="this"
+         hx-swap="outerHTML"
+    >
+        @template.navigation.button.Button(
+            label = "Choose a Store ",
+            style = "secondary",
+            classNames = "w-full"
+        )
+    </div>
+
+    </div>
+</div>

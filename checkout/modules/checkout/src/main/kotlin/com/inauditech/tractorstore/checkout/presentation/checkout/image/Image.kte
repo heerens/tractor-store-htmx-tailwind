@@ -1,0 +1,13 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.image.ImageView
+
+@param imageView: ImageView
+@param classNames: String?
+
+<img class="${classNames}"
+     src="${imageView.src}"
+     srcset="${imageView.srcset}"
+     sizes="${imageView.sizes}"
+     alt="${imageView.alt}"
+     width="${imageView.width}"
+     height="${imageView.height}"
+>

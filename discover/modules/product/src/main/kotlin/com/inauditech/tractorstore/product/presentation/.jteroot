@@ -1,0 +1,3 @@
+The file will be picked up by JTE to find the templates.
+JTE has only one template namespace for all modules therefore make
+sure the root package matches the module name.

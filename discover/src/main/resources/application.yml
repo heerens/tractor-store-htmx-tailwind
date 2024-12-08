@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true
+    templateSuffix: .kte

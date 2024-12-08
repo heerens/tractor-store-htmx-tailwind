@@ -1,0 +1,77 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.minicart.MiniCartView
+
+@param miniCartView: MiniCartView
+
+<style>
+    #cart-button svg {
+        --minicart-translate: -2px;
+        transform: translateY(var(--minicart-translate));
+    }
+
+    @keyframes bounce {
+        0% {
+            transform: translateY(calc(var(--minicart-translate) + 0px));
+        }
+        33% {
+            transform: translateY(calc(var(--minicart-translate) + 6px));
+        }
+        100% {
+            transform: translateY(calc(var(--minicart-translate) + 0px));
+        }
+    }
+
+    #cart-button.highlight svg {
+        animation: bounce 0.2s ease-out;
+    }
+
+    @keyframes shake {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(6deg);
+        }
+        100% {
+            transform: rotate(-6deg);
+        }
+    }
+
+    #cart-button.highlight svg g {
+        transform-origin: center 7px;
+        animation: shake 0.2s infinite ease-in-out;
+    }
+</style>
+<script>
+    function toggleHighlight() {
+        const element = document.getElementById('cart-button');
+        element.classList.add('highlight');
+        setTimeout(() => {
+            element.classList.remove('highlight');
+        }, 500);
+    }
+    document.body.addEventListener("cartUpdated", function(evt){
+        toggleHighlight();
+    })
+</script>
+<div data-boundary="checkout-checkout" class="p-6">
+        <a id="cart-button" href="/checkout/cart" class="group rounded-full border-2 border-gray-200 shadow-sm shadow-transparent p-3 flex items-center justify-center bg-white transition-all duration-200 hover:shadow-gray-200 hover:bg-gray-100 hover:border-gray-300 focus-within:outline-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                <g clip-path="url(#a)">
+                    <path fill="#000" d="M2.75 27.5c0 1.5125 1.2375 2.75 2.75 2.75h22c1.5125 0 2.75-1.2375 2.75-2.75V9.625h-6.3188c-.649-3.5145-3.7311-6.1875-7.4312-6.1875-3.7001 0-6.78219 2.673-7.43119 6.1875H2.75V27.5ZM16.5 4.8125c2.9391 0 5.4003 2.06113 6.028 4.8125H10.472c.6277-2.75137 3.0889-4.8125 6.028-4.8125ZM8.9375 11v4.125h1.375V11h12.375v4.125h1.375V11h4.8125v16.5c0 .7583-.6167 1.375-1.375 1.375h-22c-.75831 0-1.375-.6167-1.375-1.375V11h4.8125Z"></path>
+                </g>
+                <defs>
+                    <clipPath id="a"><path fill="#fff" d="M0 0h33v33H0z"></path></clipPath>
+                </defs>
+            </svg>
+        </a>
+
+    <div hx-get="/checkout/fragments/v1/minicart/amount"
+         hx-trigger="cartUpdated from:body"
+         hx-target="this"
+         hx-swap="innerHTML"
+    >
+        @template.checkout.minicart.MiniCartAmount(amount = miniCartView.amount)
+    </div>
+</div>
+
+

@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true
+    templateSuffix: .kte
+
+
+checkout:
+  product-feed-url: http://host.docker.internal:8080/product/api/v1/feed

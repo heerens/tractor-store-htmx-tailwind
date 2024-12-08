@@ -1,0 +1,35 @@
+
+@param label: String
+@param classNames: String = ""
+@param style: String
+@param disabled: Boolean = false
+@param type: String = "button"
+
+
+@if(style=="primary")
+
+    @if(disabled)
+        <button type='${type}' disabled class='${classNames} p-0.5 rounded-full bg-gradient-to-b from-gray-400 to-gray-200 text-white tracking-widest uppercase cursor-pointer font-semibold text-center  shadow transition-all duration-500 '>
+                <span class="w-full px-6 py-3 rounded-full bg-gray-400 block">
+                ${label}
+                </span>
+        </button>
+    @else
+        <button type='${type}'  class='${classNames} p-0.5 rounded-full bg-gradient-to-b from-gray-400 to-gray-200 text-white tracking-widest uppercase cursor-pointer font-semibold text-center  shadow transition-all duration-500 '>
+                    <span class="w-full px-6 py-3 rounded-full bg-gray-800 block transform active:scale-95">
+                    ${label}
+                    </span>
+        </button>
+    @endif
+
+@endif
+
+
+
+@if(style=="secondary")
+    <button type='${type}' class='${classNames} p-0.5 rounded-full bg-gradient-to-b from-gray-300 to-gray-200  text-black tracking-widest uppercase cursor-pointer font-semibold text-center shadow transition-all duration-500 '>
+                <span class="w-full px-6 py-3 rounded-full hover:bg-gray-200 bg-white block transform active:scale-95">
+                ${label}
+                </span>
+    </button>
+@endif

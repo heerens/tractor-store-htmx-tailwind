@@ -1,0 +1,32 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.buybox.BuyBoxView
+
+@param buyBoxView: BuyBoxView
+
+<form hx-put="/checkout/fragments/v1/buybox">
+    <div data-boundary="checkout-checkout" class="p-4 mb-8">
+        <div class="flex justify-between mb-8">
+            <div>${buyBoxView.variant.price} Ø</div>
+            <div>
+                @if(buyBoxView.variant.inventory != 0)
+                    <span class="text-green-700">${buyBoxView.variant.inventory} in stock, free shipping</span>
+                @else
+                    <span class="text-red-700">out of stock</span>
+                @endif
+            </div>
+        </div>
+        <div class="mb-8">
+            @template.checkout.button.Button(
+                label = "Add To Basket",
+                classNames = "w-full",
+                style="primary",
+                type="submit"
+            )
+            <input name="sku" value="${buyBoxView.variant.sku.value}" type="hidden"/>
+            <div class="mt-4 h-8">
+            @if(buyBoxView.showUpdateHint)
+                Tractor was added. <a class="underline" href="/checkout/cart">View in basket.</a>
+            @endif
+            </div>
+        </div>
+    </div>
+</form>

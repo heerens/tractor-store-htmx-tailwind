@@ -1,0 +1,59 @@
+
+@font-face {
+    font-family: "Raleway";
+    src: url("/cdn/font/raleway-regular.woff2")
+    format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html, body {
+    font-family: Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+}
+
+form {
+    margin : 0;
+}
+
+.ts-container {
+    max-width: 1048px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ts-container-px {
+    max-width: 1048px;
+    margin-left: auto;
+    margin-right: auto;
+    /* px-6 */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+
+.active\:scale-95:active {
+    scale: .95;
+}
+
+.decoration-2,
+.decoration-2:hover {
+    text-decoration-thickness: 2px;
+}
+
+.underline-offset-2,
+.underline-offset-2:hover {
+    text-underline-offset: 4px;
+}
+
+.tracking-1 {
+    letter-spacing: 0.25rem;
+}
+
+.tracking-2 {
+    letter-spacing: 0.5rem;
+}
+

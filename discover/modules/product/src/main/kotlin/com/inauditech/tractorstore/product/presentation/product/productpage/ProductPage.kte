@@ -1,0 +1,24 @@
+@import com.inauditech.tractorstore.product.presentation.product.productpage.ProductPage.ProductPageView
+
+@param productPageView: ProductPageView 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Product</title>
+
+    @template.product.head.common()
+    @template.product.head.favicon()
+
+</head>
+<body data-boundary-page="product-decide">
+@template.product.include.inculde(url = "/navigation/fragments/v1/header")
+
+@template.product.productpage.ProductDetails(productDetailsView = productPageView.productDetailsView)
+
+@template.product.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

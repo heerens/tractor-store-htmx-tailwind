@@ -1,0 +1,35 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.cart.CartView
+
+@param cartView: CartView
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Cart</title>
+
+    @template.checkout.head.common()
+    @template.checkout.head.favicon()
+
+</head>
+<body data-boundary-page="checkout-checkout">
+@template.checkout.include.inculde(url = "/navigation/fragments/v1/header")
+
+<div class="ts-container-px mb-8">
+    <h2 class="mb-4 text-2xl">Basket</h2>
+    @template.checkout.cart.Cart(cartView = cartView)
+</div>
+
+<div class="ts-container-px flex flex-wrap gap-x-48 gap-y-8 justify-end sm:justify-between sm:flex-row-reverse">
+    <a href="/checkout/checkout">
+    @template.checkout.button.Button(label = "Checkout", style="primary")
+    </a>
+    <a href="/">
+        @template.checkout.button.Button(label = "Continue Shopping", style="secondary" )
+    </a>
+</div>
+
+@template.checkout.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

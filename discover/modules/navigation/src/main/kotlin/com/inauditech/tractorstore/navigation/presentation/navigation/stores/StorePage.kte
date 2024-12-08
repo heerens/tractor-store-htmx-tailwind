@@ -1,0 +1,45 @@
+@import com.inauditech.tractorstore.navigation.presentation.navigation.stores.StorePageView
+
+@param storePageView: StorePageView 
+
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Stores</title>
+
+    @template.navigation.head.common()
+    @template.navigation.head.favicon()
+
+</head>
+<body data-boundary-page="navigation-explore">
+@template.navigation.include.inculde(url = "/navigation/fragments/v1/header")
+
+<div class="ts-container-px">
+    <h2 class="mb-4 text-2xl">Our Stores</h2>
+    <p class="mb-24 md:w-3/4">
+        Want to see our products in person? Visit one of our stores to see our products up close and talk to our experts. We have stores in the following locations:
+    </p>
+    <div class="flex flex-wrap gap-8 justify-between">
+    @for(view in storePageView.stores)
+        <div class="w-48">
+            <div class="mb-4">
+                @template.navigation.image.Image(imageView = view.imageView, classNames = "w-100")
+            </div>
+            <div class="">${view.store.name}</div>
+            <div class="">${view.store.street}</div>
+            <div class="">${view.store.city}</div>
+        </div>
+    @endfor
+    </div>
+</div>
+
+
+
+
+
+@template.navigation.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

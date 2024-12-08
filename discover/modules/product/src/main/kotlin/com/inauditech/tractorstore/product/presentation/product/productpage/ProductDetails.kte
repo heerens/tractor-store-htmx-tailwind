@@ -1,0 +1,57 @@
+@import com.inauditech.tractorstore.product.presentation.product.productpage.ProductDetails.ProductDetailsView
+
+@param productDetailsView: ProductDetailsView 
+
+<div id="hx-product-details">
+
+
+<section class="ts-container">
+    <div class="flex items-center flex-col lg:flex-row">
+        <div class="w-1/2">
+            @template.product.image.Image(
+                imageView = productDetailsView.imageView,
+                classNames = "w-100 h-96"
+            )
+        </div>
+        <div class="w-1/2">
+            <div class="mb-8">
+                <h2 class="mb-8 text-5xl tracking-tight">${productDetailsView.product.name}</h2>
+                <ul class="mb-14">
+                    @for(highlight in productDetailsView.product.highlights)
+                    <li class="mb-2">${highlight}</li>
+                    @endfor
+                </ul>
+                <ul class="flex items-center gap-x-6">
+                    @for(variant in productDetailsView.product.variants)
+                    <li class="flex items-center" style="--variant-color: ${variant.color}">
+                        <div  style="border-color: ${variant.color}; --tw-gradient-to: ${variant.color};--tw-gradient-from: #fff;--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, ${variant.color} 100%);"
+                                class="mr-2 w-4 h-4 rounded-full border border-gray-700 bg-gradient-to-b from-white to-red-500"></div>
+                        @if(productDetailsView.variant.sku == variant.sku)
+                            <span class="underline decoration-2 underline-offset-2"
+                            >${variant.name}</span>
+                        @else
+                            <a class="hover:underline decoration-2 underline-offset-2"
+                               style="text-decoration-color: ${variant.color}"
+                               href="/product/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
+                               hx-push-url="/product/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
+                               hx-get="/product/fragments/v1/details/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
+                               hx-target="#hx-product-details"
+                            >${variant.name}</a>
+                        @endif
+                    </li>
+                    @endfor
+
+                </ul>
+            </div>
+            <div>
+                @template.product.include.inculde(url = "/checkout/fragments/v1/buybox/${productDetailsView.variant.sku.value}")
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ts-container">
+    @template.product.include.inculde(url = "/discovery/fragments/v1/recommendations/${productDetailsView.variant.sku.value}")
+</section>
+
+</div>

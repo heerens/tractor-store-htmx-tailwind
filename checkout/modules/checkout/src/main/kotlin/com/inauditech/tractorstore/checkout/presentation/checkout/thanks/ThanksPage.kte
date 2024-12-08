@@ -1,0 +1,63 @@
+
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Thanks!</title>
+
+    @template.checkout.head.common()
+    @template.checkout.head.favicon()
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+</head>
+<body data-boundary-page="checkout-checkout">
+@template.checkout.include.inculde(url = "/navigation/fragments/v1/header")
+
+
+<script>
+    const end = Date.now() + 1000;
+
+    const settings = {
+        particleCount: 3,
+        scalar: 1.5,
+        colors: ["#FFDE54", "#FF5A54", "#54FF90"],
+        spread: 70,
+    };
+    /**
+     * Animates confetti particles.
+     */
+    function frame() {
+        confetti({
+            ...settings,
+            angle: 60,
+            origin: { x: 0 },
+        });
+        confetti({
+            ...settings,
+            angle: 120,
+            origin: { x: 1 },
+        });
+
+        if (Date.now() < end) {
+            window.requestAnimationFrame(frame);
+        }
+    }
+    frame();
+</script>
+<div class="ts-container-px flex items-center justify-center h-1/2 ">
+    <div class="w-1/2">
+    <h1 class="mb-20 mt-8 text-5xl">Thanks for your order!</h1>
+    <p class="mb-20">We'll notify you, when its ready for pickup.</p>
+    <a class="" href="/">
+        @template.checkout.button.Button(label = "Continue Shopping", style="secondary", classNames = "w-full" )
+    </a>
+    </div>
+</div>
+
+
+
+@template.checkout.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

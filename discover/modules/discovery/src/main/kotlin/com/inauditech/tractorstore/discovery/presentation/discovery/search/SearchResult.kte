@@ -1,0 +1,58 @@
+@import com.inauditech.tractorstore.discovery.presentation.discovery.search.SearchResultView
+@import com.inauditech.tractorstore.discovery.presentation.discovery.search.SearchForm
+@import org.jetbrains.kotlin.util.prefixIfNot
+
+@param searchForm: SearchForm
+@param searchResultView: SearchResultView
+
+
+<div id="hx-search-result">
+<div class="flex justify-between">
+    <div>${searchResultView.results.size} products</div>
+    <div>
+
+        <ul class="flex items-center gap-x-6">
+            <li>Filter: </li>
+            @for(filter in searchResultView.filter)
+                <li class="flex items-center" >
+                    @if(searchForm.key == filter.key)
+                        <span class="underline decoration-2 underline-offset-2"
+                        >${filter.name}</span>
+                    @else
+                        <form hx-post="/discovery/fragments/v1/search"
+                              hx-target="#hx-search-result"
+                              hx-push-url="/products${ filter.key?.prefixIfNot("/") ?: "" }"
+                        >
+                            <input type="hidden" name="key" value="${filter.key}"/>
+                        <button type="submit" class="hover:underline decoration-2 underline-offset-2"
+                           style="text-decoration-color: black"
+
+                        >${filter.name}</button>
+                        </form>
+                    @endif
+                </li>
+            @endfor
+
+        </ul>
+
+    </div>
+
+</div>
+<ul class="grid  grid-cols-2 md:grid-cols-3 gap-16">
+    @for(result in searchResultView.results)
+        <li class="text-center">
+    <a href="/product/${result.product.id.value}">
+            @template.discovery.image.Image(imageView = result.imageView, classNames = "w-full")
+            <div>
+                ${result.product.name}
+            </div>
+            <div>
+                ${result.product.startPrice} Ø
+            </div>
+    </a>
+        </li>
+    @endfor
+
+</ul>
+
+</div>

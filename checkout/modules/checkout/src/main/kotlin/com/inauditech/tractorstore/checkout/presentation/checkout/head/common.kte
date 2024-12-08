@@ -1,0 +1,4 @@
+<script src="/cdn/js/alpinejs-3.14.4.min.js" defer></script>
+<script src="/cdn/js/htmx-2.0.3.js"></script>
+<link rel="stylesheet" href="/cdn/css/tailwind-2.2.19.min.css">
+<link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">

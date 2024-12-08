@@ -1,0 +1,50 @@
+@import com.inauditech.tractorstore.navigation.presentation.navigation.stores.StorePageView
+
+@param storePageView: StorePageView 
+
+
+<div  class="z-10 text-left fixed inset-0 flex items-center justify-center backdrop-filter backdrop-blur-sm bg-opacity-75">
+    <div class="bg-white rounded-2xl shadow-lg p-6 " data-boundary="navigation-explore" >
+
+
+            <h2 class="mb-4 text-2xl">Stores</h2>
+
+
+
+            <div class="grid gap-8 grid-cols-2 lg:grid-cols-4">
+
+            @for(view in storePageView.stores)
+                <div class="w-48">
+                    <div class="mb-4">
+                        @template.navigation.image.Image(imageView = view.imageView, classNames = "w-100")
+                    </div>
+                    <div class="">${view.store.name}</div>
+                    <div class="">${view.store.street}</div>
+                    <div class="mb-4">${view.store.city}</div>
+
+                    <div>
+                        <form hx-post="/navigation/fragments/v1/storepicker"
+                              hx-target="#hx-store-picker"
+                              hx-swap="outerHTML"
+
+                        >
+                            <input name="storeId" type="hidden" value="${view.store.id.value}">
+                            @template.navigation.button.Button(
+                            type = "submit",
+                            label = "Select",
+                            style = "secondary",
+                            classNames = "w-full"
+                            )
+                        </form>
+                    </div>
+                </div>
+            @endfor
+            </div>
+
+
+
+    </div>
+</div>
+
+
+

@@ -1,0 +1,33 @@
+version: "3.4"
+name: "inaudi-tech-tractor-store"
+services:
+
+  discovery:
+    image: discovery:custom
+    build:
+      context: ./discover
+      dockerfile: Dockerfile
+    container_name: discover-1
+    ports:
+      - 8080:8080
+
+  checkout:
+    image: checkout:custom
+    build:
+      context: ./checkout
+      dockerfile: Dockerfile
+    container_name: checkout-1
+    ports:
+      - 8081:8081
+
+
+  integration:
+    image: nginx:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - ./integration/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./integration/nginx/html/:/etc/nginx/html/
+      - ./integration/cdn/:/etc/nginx/html/cdn/
+      - ./integration/patternlib/storybook/:/etc/nginx/html/storybook/
+      - ./integration/patternlib/share/:/etc/nginx/html/share/

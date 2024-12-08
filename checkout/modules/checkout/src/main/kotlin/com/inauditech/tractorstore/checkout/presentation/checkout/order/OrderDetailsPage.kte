@@ -1,0 +1,35 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.order.OrderForm
+@import org.springframework.validation.BindingResult
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Checkout</title>
+
+    @template.checkout.head.common()
+    @template.checkout.head.favicon()
+
+</head>
+<body data-boundary-page="checkout-checkout">
+<div class="w-full border-b mb-8 mt-4">
+    <div class="ts-container-px py-4">
+        <a href="/">
+            <img class="w-48" src="https://blueprint.the-tractor.store/cdn/img/logo.svg" alt="Micro Frontends - Tractor Store">
+        </a>
+    </div>
+</div>
+
+<div class="ts-container-px mb-8">
+    <h2 class="mb-4 text-2xl">Checkout</h2>
+    @template.checkout.order.OrderDetails(
+        orderForm = OrderForm(),
+    )
+</div>
+
+
+
+@template.checkout.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

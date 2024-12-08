@@ -1,0 +1,29 @@
+@import com.inauditech.tractorstore.discovery.presentation.discovery.search.SearchResultView
+@import com.inauditech.tractorstore.discovery.presentation.discovery.search.SearchForm
+
+@param searchForm: SearchForm
+@param searchResultView: SearchResultView
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Search</title>
+
+    @template.discovery.head.common()
+    @template.discovery.head.favicon()
+
+</head>
+<body data-boundary-page="discovery-inspire">
+@template.discovery.include.inculde(url = "/navigation/fragments/v1/header")
+
+<div class="ts-container-px mb-8">
+    <h2 class="mb-4 text-2xl">All Machines</h2>
+    @template.discovery.search.SearchResult(searchForm = searchForm, searchResultView = searchResultView)
+</div>
+
+
+@template.discovery.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

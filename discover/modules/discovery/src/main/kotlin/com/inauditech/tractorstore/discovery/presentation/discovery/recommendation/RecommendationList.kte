@@ -1,0 +1,22 @@
+@import com.inauditech.tractorstore.discovery.presentation.discovery.recommendation.RecommendationListView
+@import gg.jte.support.ForSupport
+
+@param recommendationListViews: List<RecommendationListView>
+
+<div class="p-6" data-boundary="discovery-inspire">
+    <h2 class="mb-4 text-2xl">Recommendations</h2>
+    <div class="flex gap-x-8">
+        @for(entryLoop in ForSupport.of(recommendationListViews))
+            !{
+                val view: RecommendationListView = entryLoop.get()
+                val index: Int = entryLoop.index
+            }
+            <div class="${if(index != 3) "w-1/3" else "hidden lg:block w-1/3"} text-center">
+                <a href="/product/${view.recommendation.productId.value}?sku=${view.recommendation.sku.value}">
+                    @template.discovery.image.Image(imageView = view.imageView, classNames = "mb-2 w-full")
+                    ${view.recommendation.name}
+                </a>
+            </div>
+        @endfor
+    </div>
+</div>

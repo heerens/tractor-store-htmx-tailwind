@@ -1,0 +1,50 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.cart.CartView
+
+@param cartView: CartView
+
+<div id="hx-cart">
+    <ul class="">
+        @for(view in cartView.items)
+
+
+
+        <li class="flex flex-wrap items-center gap-x-8">
+
+            <a href="/product/${view.variant.productId.value}?sku=${view.variant.sku.value}">
+                @template.checkout.image.Image(imageView = view.imageView, classNames = "mb-2 w-32 mr-12")
+            </a>
+            <div class="flex items-center justify-end gap-x-8 gap-y-8 flex-grow flex-wrap">
+                <a href="/product/${view.variant.productId.value}?sku=${view.variant.sku.value}" class="flex-grow">
+                    <strong> ${view.variant.name}</strong><br> ${view.variant.sku.value}
+                </a>
+
+                <div class="w-24 flex flex-nowrap items-center justify-end gap-x-4">
+                    <span>${view.amount}</span>
+
+                    <form hx-delete="/checkout/fragments/v1/cart" hx-target="#hx-cart" class="m-0">
+                        <input type="hidden" name="sku" value="${view.variant.sku.value}">
+                        <button type="submit" value="remove"
+                                title="Remove ${view.variant.name} from cart"
+                                class="group rounded-full border-2 border-gray-200 shadow-sm shadow-transparent p-2 flex items-center justify-center bg-white transition-all duration-200 hover:shadow-gray-200 hover:bg-gray-100 hover:border-gray-300 focus-within:outline-gray-300">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20"
+                                     viewBox="0 0 48 48">
+                                    <path fill="#000"
+                                          d="m40 5.172-16 16-16-16L5.171 8l16.001 16L5.171 40 8 42.828l16-16 16 16L42.828 40l-16-16 16-16L40 5.172Z"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+                <div class="w-24 text-right">${view.totalPrice} Ø</div>
+            </div>
+        </li>
+        @endfor
+    </ul>
+
+
+    @template.checkout.divider.line()
+
+    <div class="text-right">Total: ${cartView.totalPrice} Ø</div>
+
+</div>

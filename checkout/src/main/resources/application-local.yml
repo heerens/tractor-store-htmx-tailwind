@@ -1,0 +1,8 @@
+gg:
+  jte:
+    developmentMode: true
+    usePrecompiledTemplates: false
+
+
+checkout:
+  product-feed-url: http://localhost:8080/product/api/v1/feed

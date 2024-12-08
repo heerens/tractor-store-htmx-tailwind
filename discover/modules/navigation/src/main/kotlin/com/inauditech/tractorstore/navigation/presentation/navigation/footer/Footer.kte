@@ -1,0 +1,39 @@
+
+
+
+<footer class="ts-container mt-12 overflow-hidden pt-10" data-boundary="navigation-explore">
+    <div class="flex flex-wrap nav-shadow-b pt-6 pb-12 px-6 border-t border-gray-200">
+        <div class="w-full lg:w-1/2 mb-8 flex items-start gap-x-4">
+            <!-- please leave this part untouched -->
+            <img class="mt-1" src="https://blueprint.the-tractor.store/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="45" height="40">
+            <p>
+                based on
+                <a class="underline text-red-400" href="https://micro-frontends.org/tractor-store/" target="_blank">
+                    the tractor store 2.0
+                </a>
+                <br>
+                a
+                <a class="underline text-red-400" href="https://neuland-bfi.de" target="_blank">neuland</a> project
+            </p>
+        </div>
+        <div class="w-full  lg:w-1/2">
+            <!-- replace this details about your implementation and organization -->
+            <h3 class="text-red-400 mb-2">techstack</h3>
+            <p>
+                ssr-only, modular monolith, template strings, esbuild, hono,
+                cloudflare workers
+            </p>
+            <p class="flex gap-x-2">
+                build by
+                <img src="https://blueprint.the-tractor.store/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="15" height="13">
+                <a class="text-red-400" href="https://neuland-bfi.de" target="_blank">neuland</a>
+                /
+                <a class="text-red-400" href="https://github.com/neuland/tractor-store-blueprint" target="_blank">
+                    github
+                </a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="/cdn/js/helper.js" type="module"></script>
