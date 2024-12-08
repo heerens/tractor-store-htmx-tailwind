@@ -1,10 +1,6 @@
 server:
   port: 8081
 
-spring:
-  main:
-    lazy-initialization: true
-
 gg:
   jte:
     developmentMode: false
