@@ -2,13 +2,20 @@
 
 ENVIRONMENT="prod"
 
+# Trap SIGTERM and SIGINT signals to stop all processes cleanly
+trap 'kill -TERM $PID_NGINX $PID_APP1 $PID_APP2; wait' TERM INT
+
 # Start the Spring Boot applications
-# java -jar -Dspring.profiles.active=$ENVIRONMENT /app-discover.jar &
-# java -jar -Dspring.profiles.active=$ENVIRONMENT /app-checkout.jar &
+echo "Start Spring Boot apps (profile=${ENVIRONMENT})..."
+java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-discover.jar &
+PID_APP1=$!
+java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-checkout.jar &
+PID_APP2=$!
 
-# Start NGINX
-# echo "Start NGINX (nginx-$ENVIRONMENT.conf)..."
-#nginx -c /etc/nginx/nginx-$ENVIRONMENT.conf -g "daemon off;"
+# Start NGINX in the background
+echo "Start NGINX (nginx-$ENVIRONMENT.conf)..."
+nginx -c /etc/nginx/nginx-$ENVIRONMENT.conf -g "daemon off;" &
+PID_NGINX=$!
 
-echo "Start discover on 3000"
-java -jar -Dspring.profiles.active=$ENVIRONMENT /app-discover.jar
+# Wait for all processes
+wait
