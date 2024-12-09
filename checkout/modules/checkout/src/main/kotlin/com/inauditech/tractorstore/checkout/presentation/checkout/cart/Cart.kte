@@ -3,7 +3,7 @@
 @param cartView: CartView
 
 <div id="hx-cart">
-    <ul class="">
+    <ul class="mb-4">
         @for(view in cartView.items)
 
 

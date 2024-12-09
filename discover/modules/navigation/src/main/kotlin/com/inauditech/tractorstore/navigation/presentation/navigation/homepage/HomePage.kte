@@ -13,7 +13,7 @@
 @template.navigation.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px">
-    <div class="flex gap-x-4 text-center mb-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 text-center mb-12">
         <a class="hover:underline" href="/products/classic">
             <img class="mb-2" src="https://blueprint.the-tractor.store/cdn/img/scene/500/classics.webp" srcset="https://blueprint.the-tractor.store/cdn/img/scene/500/classics.webp 500w, https://blueprint.the-tractor.store/cdn/img/scene/1000/classics.webp 1000w" sizes="100vw, (min-width: 500px) 50vw" alt="">
             Classic Tractors

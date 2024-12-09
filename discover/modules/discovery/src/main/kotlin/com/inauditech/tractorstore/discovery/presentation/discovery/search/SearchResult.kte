@@ -7,12 +7,12 @@
 
 
 <div id="hx-search-result">
-<div class="flex justify-between">
-    <div>${searchResultView.results.size} products</div>
-    <div>
-
+<div class="flex justify-between flex-wrap gap-4">
+    <div class="w-32">${searchResultView.results.size} products</div>
+    <div class="flex gap-4">
+        <div>Filter: </div>
         <ul class="flex items-center gap-x-6">
-            <li>Filter: </li>
+
             @for(filter in searchResultView.filter)
                 <li class="flex items-center" >
                     @if(searchForm.key == filter.key)

@@ -5,15 +5,15 @@
 <div id="hx-product-details">
 
 
-<section class="ts-container">
-    <div class="flex items-center flex-col lg:flex-row">
-        <div class="w-1/2">
+<section class="ts-container-px">
+    <div class="grid grid-cols-1 lg:grid-cols-2 justify-items-center gap-x-16">
+        <div class="md:w-1/2 lg:w-full">
             @template.product.image.Image(
                 imageView = productDetailsView.imageView,
-                classNames = "w-100 h-96"
+                classNames = "w-full"
             )
         </div>
-        <div class="w-1/2">
+        <div class="md:w-1/2 lg:w-full">
             <div class="mb-8">
                 <h2 class="mb-8 text-5xl tracking-tight">${productDetailsView.product.name}</h2>
                 <ul class="mb-14">

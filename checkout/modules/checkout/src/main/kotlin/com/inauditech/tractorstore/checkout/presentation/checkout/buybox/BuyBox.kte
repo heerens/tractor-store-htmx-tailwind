@@ -14,19 +14,21 @@
                 @endif
             </div>
         </div>
-        <div class="mb-8">
-            @template.checkout.button.Button(
-                label = "Add To Basket",
-                classNames = "w-full",
-                style="primary",
-                type="submit"
-            )
-            <input name="sku" value="${buyBoxView.variant.sku.value}" type="hidden"/>
-            <div class="mt-4 h-8">
-            @if(buyBoxView.showUpdateHint)
-                Tractor was added. <a class="underline" href="/checkout/cart">View in basket.</a>
-            @endif
+        @if(buyBoxView.variant.inventory != 0)
+            <div class="mb-8">
+                @template.checkout.button.Button(
+                    label = "Add To Basket",
+                    classNames = "w-full",
+                    style="primary",
+                    type="submit"
+                )
+                <input name="sku" value="${buyBoxView.variant.sku.value}" type="hidden"/>
+                <div class="mt-4 h-8">
+                @if(buyBoxView.showUpdateHint)
+                    Tractor was added. <a class="underline" href="/checkout/cart">View in basket.</a>
+                @endif
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </form>
