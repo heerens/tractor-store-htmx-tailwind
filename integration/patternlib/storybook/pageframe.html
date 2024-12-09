@@ -6,24 +6,46 @@
 
     <title>Enter Title Here</title>
 
-    <script src="../../cdn/js/alpinejs-3.14.4.min.js" defer></script>
-    <script src="../../cdn/js/htmx-2.0.3.js"></script>
-    <link rel="stylesheet" href="../../cdn/css/pl-1.0.3.css">
-    <link rel="stylesheet" href="../../cdn/css/tailwind-2.2.19.min.css">
+    <!-- default resources -->
+    <script src="/cdn/js/alpinejs-3.14.4.min.js" defer></script>
+    <script src="/cdn/js/htmx-2.0.3.js"></script>
+    <link rel="stylesheet" href="/cdn/css/tailwind-2.2.19.min.css">
+    <link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">
 
 </head>
 <body data-boundary-page="decide">
 
 <!--#include virtual="/navigation/fragments/v1/header" -->
 
-<section class="ts-container">
-    <h1>Page Template</h1>
-    Use the HTML of his page as an emtpy template for your page.
+<section class="ts-container-px">
+    <div class="h-96">
+        <h1 class="mb-8 text-5xl">Page Template</h1>
+        Use the HTML of his page as an empty template for your page.
+        <div>
+
+            <a class="underline text-red-400" href="index.html">Back to StoryBook</a>
+
+        </div>
+    </div>
 </section>
-<section class="ts-container">
-    <div class="w-100 bg-red-100">
+
+
+<section class="ts-container-px">
+    <div class="h-96">
+    <div class="w-100">
+        A container with padding.<br>
         Just a spacer to demonstrate the available width of the content.
         <div class="w-100 bg-red-400 sm:bg-blue-600 md:bg-yellow-400 lg:bg-green-400"> 100% </div>
+    </div>
+    </div>
+</section>
+
+<section class="ts-container">
+    <div class="h-96">
+        <div class="w-100">
+            A full page container...
+            <div class="w-100 bg-red-400 sm:bg-blue-600 md:bg-yellow-400 lg:bg-green-400"> 100% </div>
+        </div>
     </div>
 </section>
 

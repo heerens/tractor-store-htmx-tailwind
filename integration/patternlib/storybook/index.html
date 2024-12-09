@@ -3,18 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <title>Pattern Lib</title>
-    <script src="../../cdn/js/alpinejs-3.14.4.min.js" defer></script>
-    <script src="../../cdn/js/htmx-2.0.3.js"></script>
-    <link rel="stylesheet" href="../../cdn/css/tailwind-2.2.19.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="/cdn/js/alpinejs-3.14.4.min.js" defer></script>
+    <script src="/cdn/js/htmx-2.0.3.js"></script>
+    <link rel="stylesheet" href="/cdn/css/tailwind-2.2.19.min.css">
+    <link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism-tomorrow.min.css">
+    <style>
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        code {
+            font-size: 0.9rem !important;
+        }
+        pre[class*="language-"] {
+            position: relative;
+            overflow: auto;
+            padding: 0rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.5rem;
+        }
+
+        pre button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+
+            font-size: 0.9rem;
+            padding: 0.15rem;
+            background-color: #828282;
+
+            border: ridge 1px #7b7b7c;
+            border-radius: 5px;
+        }
+
+        pre[class*="language-"] button:hover {
+            cursor: pointer;
+            background-color: #bcbabb;
+        }
+    </style>
+
 </head>
 <body>
-<h1 class="bg-green-500">Patter Lib</h1>
-<p>
+
+
+<section class="ts-container-px">
+
+<header class="h-32 mb-16 border-b-2 border-gray-200 flex items-center font-bold">
+    <div>
+
+<h1 class="text-4xl">Component &amp; Pattern Lib</h1>
+<p class="ml-2 text-sm">
 Ok, this is not StoryBook, but you get the idea....
 </p>
-<p>
-For a new page use the <a class="text-blue-400 bg" href="pageframe.html">Page Frame Template</a>.
-</p>
+    </div>
+</header>
+
+    <p class="mb-8">This library contains code templates ready to use by the domain teams developing the shop. <br>
+
+
+    </p>
+    <p>It's bases on Tailwind CSS (v2) and some own custom styles. Include the following resources to copy &amp; paste the components and styles.</p>
+
+    <section class="mb-32">
+    <pre class="language-html"><code>
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/cdn/css/tailwind-2.2.19.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/cdn/css/pl-1.0.3.css&quot;&gt;
+    </code></pre>
+    </section>
+
+
+
+    <h1 class="text-3xl border-b-2">Headlines</h1>
+    <section class="mb-32">
+        <div class="py-16">
+            <h1 class="mb-8 text-5xl">Headline 1</h1>
+            <h2 class="mb-8 text-2xl">Headline 2</h2>
+            <h3 class="mb-8 ">Headline 3</h3>
+        </div>
+        <pre class="language-html"><code>
+&lt;h1 class=&quot;mb-8 text-5xl&quot;&gt;Headline 1&lt;/h1&gt;
+&lt;h2 class=&quot;mb-8 text-2xl&quot;&gt;Headline 2&lt;/h2&gt;
+&lt;h3 class=&quot;mb-8 &quot;&gt;Headline 3&lt;/h3&gt;
+        </code></pre>
+    </section>
+
+
+
+    <h1 class="text-3xl border-b-2">Links</h1>
+    <section class="mb-32">
+        <div class="py-16">
+
+            <a class="underline text-red-400" href="#">example link</a>
+
+        </div>
+        <pre class="language-html"><code>
+&lt;a class=&quot;underline text-red-400&quot; href=&quot;#&quot;&gt;example link&lt;/a&gt;
+        </code></pre>
+    </section>
+
+
+    <h1 class="text-3xl border-b-2">Button (primary)</h1>
+    <section class="mb-32">
+        <div class="py-16">
+
+            <button type='button'  class='p-0.5 rounded-full bg-gradient-to-b from-gray-400 to-gray-200 text-white tracking-widest uppercase cursor-pointer font-semibold text-center  shadow transition-all duration-500 '>
+                    <span class="w-full px-6 py-3 rounded-full bg-gray-800 block transform active:scale-95">
+                    Button Label
+                    </span>
+            </button>
+
+        </div>
+        <pre class="language-html"><code>
+&lt;button type=&#39;button&#39;  class=&#39;p-0.5 rounded-full bg-gradient-to-b from-gray-400 to-gray-200 text-white tracking-widest uppercase cursor-pointer font-semibold text-center  shadow transition-all duration-500 &#39;&gt;
+        &lt;span class=&quot;w-full px-6 py-3 rounded-full bg-gray-800 block transform active:scale-95&quot;&gt;
+        Button Label
+        &lt;/span&gt;
+&lt;/button&gt;
+        </code></pre>
+    </section>
+
+
+    <h1 class="text-3xl border-b-2">Button (secondary)</h1>
+    <section class="mb-32">
+        <div class="py-16">
+
+            <button type='button' class='p-0.5 rounded-full bg-gradient-to-b from-gray-300 to-gray-200  text-black tracking-widest uppercase cursor-pointer font-semibold text-center shadow transition-all duration-500 '>
+                <span class="w-full px-6 py-3 rounded-full hover:bg-gray-200 bg-white block transform active:scale-95">
+                Button Label
+                </span>
+            </button>
+
+        </div>
+        <pre class="language-html"><code>
+&lt;button type=&#39;button&#39; class=&#39;p-0.5 rounded-full bg-gradient-to-b from-gray-300 to-gray-200  text-black tracking-widest uppercase cursor-pointer font-semibold text-center shadow transition-all duration-500 &#39;&gt;
+    &lt;span class=&quot;w-full px-6 py-3 rounded-full hover:bg-gray-200 bg-white block transform active:scale-95&quot;&gt;
+    Button Label
+    &lt;/span&gt;
+&lt;/button&gt;
+        </code></pre>
+    </section>
+
+
+
+    <h1 class="text-3xl border-b-2">Input</h1>
+    <section class="mb-32">
+        <div class="py-16">
+
+            <div class="flex items-center gap-x-8">
+                <label class="w-20" for="c_firstname">First name</label>
+                <input value="initial value"
+                       class="border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                       type="text"
+                       id="c_firstname" name="firstName"
+                >
+            </div>
+
+        </div>
+        <pre class="language-html"><code>
+&lt;div class=&quot;flex items-center gap-x-8&quot;&gt;
+    &lt;label class=&quot;w-20&quot; for=&quot;c_firstname&quot;&gt;First name&lt;/label&gt;
+    &lt;input value=&quot;initial value&quot;
+           class=&quot;border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2&quot;
+           type=&quot;text&quot;
+           id=&quot;c_firstname&quot; name=&quot;firstName&quot;
+    &gt;
+&lt;/div&gt;
+        </code></pre>
+    </section>
+
+
+    <h1 class="text-3xl border-b-2">Page Template</h1>
+    <section class="mb-32">
+        <div class="py-16">
+            For a new page use the <a class="underline text-red-400" href="pageframe.html">Page Frame Template</a>.
+        </div>
+    </section>
+
+
+</section>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script>
+    const copyButtonLabel = "Copy Code";
+
+    // use a class selector if available
+    let blocks = document.querySelectorAll("pre");
+
+    blocks.forEach((block) => {
+        // only add button if browser supports Clipboard API
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+
+            button.innerText = copyButtonLabel;
+            block.appendChild(button);
+
+            button.addEventListener("click", async () => {
+                await copyCode(block, button);
+            });
+        }
+    });
+
+    async function copyCode(block, button) {
+        let code = block.querySelector("code");
+        let text = code.innerText;
+
+        await navigator.clipboard.writeText(text);
+
+        // visual feedback that task is completed
+        button.innerText = "Code Copied";
+
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 700);
+    }
+</script>
+
+
 </body>
 </html>

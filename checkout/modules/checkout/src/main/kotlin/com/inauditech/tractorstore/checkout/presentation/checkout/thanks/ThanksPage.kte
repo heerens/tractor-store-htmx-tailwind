@@ -47,7 +47,7 @@
     frame();
 </script>
 <div class="ts-container-px flex items-center justify-center h-1/2 ">
-    <div class="w-1/2">
+    <div class="sm:w-1/2">
     <h1 class="mb-20 mt-8 text-5xl">Thanks for your order!</h1>
     <p class="mb-20">We'll notify you, when its ready for pickup.</p>
     <a class="" href="/">

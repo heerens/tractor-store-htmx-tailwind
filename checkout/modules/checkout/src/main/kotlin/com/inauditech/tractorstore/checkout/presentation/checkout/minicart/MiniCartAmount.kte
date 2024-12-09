@@ -2,12 +2,13 @@
 
 @param amount: Int
 
-
+@if(amount > 0)
 <div class="absolute top-5 right-7 rounded-full bg-red-500 text-xs text-white flex items-center justify-center w-5 h-5">
     <div>
     ${amount}
     </div>
 </div>
+@endif
 
 
 
