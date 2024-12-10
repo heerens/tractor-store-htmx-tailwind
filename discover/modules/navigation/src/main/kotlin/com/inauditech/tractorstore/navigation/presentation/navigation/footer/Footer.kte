@@ -3,39 +3,47 @@
 
 <footer class="ts-container mt-12 overflow-hidden pt-10" data-boundary="explore">
     <div class="flex flex-wrap nav-shadow-b pt-6 pb-12 px-6 border-t border-gray-200">
-        <div class="w-full lg:w-1/2 mb-8 flex items-start gap-x-4">
-            <!-- please leave this part untouched -->
-            <img class="mt-1" src="https://blueprint.the-tractor.store/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="45" height="40">
-            <p>
-                based on
-                <a class="underline text-red-400" href="https://micro-frontends.org/tractor-store/" target="_blank">
-                    the tractor store 2.0
-                </a>
-                <br>
-                a
-                <a class="underline text-red-400" href="https://neuland-bfi.de" target="_blank">neuland</a> project
-            </p>
+        <div class="w-full lg:w-1/2 ">
+
+            <div class="mb-8 flex items-start gap-x-4">
+                <!-- please leave this part untouched -->
+                <img class="mt-1" src="https://blueprint.the-tractor.store/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="45" height="40">
+                <p>
+                    based on
+                    <a class="underline text-red-400" href="https://micro-frontends.org/tractor-store/" target="_blank">
+                        the tractor store 2.0
+                    </a>
+                    <br>
+                    a
+                    <a class="underline text-red-400" href="https://neuland-bfi.de" target="_blank">neuland</a> project
+                </p>
+            </div>
+
+            <div class=" mb-8 flex items-start gap-x-4">
+                <!-- please leave this part untouched -->
+                <img class="mt-1" src="/cdn/img/inaudi_tech_logo_150.png" alt="Inaudi Tech" width="45" height="40">
+                <p>
+                    build by
+                    <a class="underline text-blue-500" href="https://www.inauditech.com/" target="_blank">inaudi tech</a>
+                </p>
+            </div>
         </div>
         <div class="w-full  lg:w-1/2">
+            <p class="mb-4">
+                reference implementation to <a class="underline text-blue-500"  href="https://medium.com/@alexander.heerens/radically-simple-web-architecture-a-web-application-blueprint-for-startups-and-small-enterprises-f503a5f36381" target="_blank">radically simple web architecture</a>
+            </p>
             <!-- replace this details about your implementation and organization -->
             <h3 class="text-red-400 mb-2">techstack</h3>
             <p class="mb-2">
                 spring boot, 2 x modular monolith, ssi/nginx <br>
                 ssr-only, htmx, tailwind, <a class="underline text-red-400"  href="/storybook/index.html" target="_blank">patten lib</a>
             </p>
-            <p class="mb-2">
-                reference implementation to <a class="underline text-red-400"  href="https://medium.com/@alexander.heerens/radically-simple-web-architecture-a-web-application-blueprint-for-startups-and-small-enterprises-f503a5f36381" target="_blank">radically simple web architecture</a>
-            </p>
+
             <div class="flex gap-x-2 items-center">
                 <div>
-                build by
+                source code on
                 </div>
-                <div>
-                    <img src="/cdn/img/inaudi_tech_logo_150.png" alt="inaudi tech" width="20px" height="20px">
-                </div>
-                <a class="text-red-400" href="https://www.inauditech.com/" target="_blank">inaudi tech</a>
-                /
-                <a class="text-red-400" href="https://github.com/heerens/tractor-store-htmx-tailwind" target="_blank">
+                <a class="underline text-red-400" href="https://github.com/heerens/tractor-store-htmx-tailwind" target="_blank">
                     github
                 </a>
             </div>
