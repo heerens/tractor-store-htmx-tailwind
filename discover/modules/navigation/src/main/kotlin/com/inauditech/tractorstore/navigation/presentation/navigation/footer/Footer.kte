@@ -43,4 +43,6 @@
     </div>
 </footer>
 
-<script src="/cdn/js/helper.js" type="module"></script>
+<script src="/cdn/js/helper.min.js" type="module"></script>
+
+<div class="h-16">&nbsp;<!-- some space for boundary toggle --> </div>

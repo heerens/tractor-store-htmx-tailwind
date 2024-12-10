@@ -1,4 +1,4 @@
-<script src="/cdn/js/alpinejs-3.14.4.min.js" defer></script>
-<script src="/cdn/js/htmx-2.0.3.js"></script>
-<link rel="stylesheet" href="/cdn/css/tailwind-2.2.19.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.4/cdn.min.js" integrity="sha512-9e8YDYW1rsDVEtBjwhu9AWKZrgpmokuEDw0CPpUQ7ug8WbOhH8g2ZDvK3N09Kx6TDGx0zr2wzEQ1luNc1VGZ+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.3/htmx.min.js" integrity="sha512-dQu3OKLMpRu85mW24LA1CUZG67BgLPR8Px3mcxmpdyijgl1UpCM1RtJoQP6h8UkufSnaHVRTUx98EQT9fcKohw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">
