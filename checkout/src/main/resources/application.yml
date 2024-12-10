@@ -1,3 +1,5 @@
+# common configuration
+
 server:
   port: 8081
 
@@ -7,6 +9,10 @@ gg:
     usePrecompiledTemplates: true
     templateSuffix: .kte
 
+# 'checkout' domain configuration
 
 checkout:
   product-feed-url: http://host.docker.internal:8080/product/api/v1/feed
+
+
+# 'account' domain configuration

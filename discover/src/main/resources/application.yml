@@ -1,3 +1,5 @@
+# common configuration
+
 server:
   port: 8080
 
@@ -6,3 +8,10 @@ gg:
     developmentMode: false
     usePrecompiledTemplates: true
     templateSuffix: .kte
+
+
+# 'discovery' domain configuration
+
+# 'product' domain configuration
+
+# 'navigation' domain configuration
