@@ -9,8 +9,15 @@ trap 'kill -TERM $PID_NGINX $PID_APP1 $PID_APP2; wait' TERM INT
 echo "Start Spring Boot apps (profile=${ENVIRONMENT})..."
 java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-discover.jar &
 PID_APP1=$!
+
+echo "Waiting for discover to start..."
+sleep 10
+
 java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-checkout.jar &
 PID_APP2=$!
+
+echo "Waiting for checkout to start..."
+sleep 10
 
 # Start NGINX in the background
 echo "Start NGINX (nginx-$ENVIRONMENT.conf)..."
