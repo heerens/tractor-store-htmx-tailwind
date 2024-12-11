@@ -21,7 +21,9 @@
                     <li class="mb-2">${highlight}</li>
                     @endfor
                 </ul>
-                <ul class="flex items-center gap-x-6">
+                <ul class="flex flex-wrap items-center gap-6"
+                    hx-ext="preload"
+                >
                     @for(variant in productDetailsView.product.variants)
                     <li class="flex items-center" style="--variant-color: ${variant.color}">
                         <div  style="border-color: ${variant.color}; --tw-gradient-to: ${variant.color};--tw-gradient-from: #fff;--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, ${variant.color} 100%);"
@@ -36,6 +38,8 @@
                                hx-push-url="/product/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
                                hx-get="/product/fragments/v1/details/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
                                hx-target="#hx-product-details"
+                               preload="mousedown"
+                               preload-images="true"
                             >${variant.name}</a>
                         @endif
                     </li>
