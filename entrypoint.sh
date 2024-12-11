@@ -10,14 +10,16 @@ echo "Start Spring Boot apps (profile=${ENVIRONMENT})..."
 java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-discover.jar &
 PID_APP1=$!
 
-echo "Waiting for discover to start..."
-sleep 10
+# Graceful start of all apps to cater AWS App Runner
+echo "Waiting for 'discover' app to start..."
+sleep 15
 
 java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-checkout.jar &
 PID_APP2=$!
 
-echo "Waiting for checkout to start..."
-sleep 10
+# Graceful start of all apps to cater AWS App Runner
+echo "Waiting for 'checkout' app to start..."
+sleep 15
 
 # Start NGINX in the background
 echo "Start NGINX (nginx-$ENVIRONMENT.conf)..."
