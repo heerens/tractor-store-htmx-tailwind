@@ -42,15 +42,9 @@
     }
 </style>
 <script>
-    function toggleHighlight() {
-        const element = document.getElementById('cart-button');
-        element.classList.add('highlight');
-        setTimeout(() => {
-            element.classList.remove('highlight');
-        }, 500);
-    }
     document.body.addEventListener("cartUpdated", function(evt){
-        toggleHighlight();
+        htmx.addClass(htmx.find('#cart-button'), 'highlight');
+        htmx.removeClass(htmx.find("#cart-button"), "highlight", 500);
     })
 </script>
 <div data-boundary="checkout" class="p-6">
