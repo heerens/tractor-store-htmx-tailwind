@@ -42,7 +42,7 @@
     }
 </style>
 <script>
-    document.body.addEventListener("cartUpdated", function(evt){
+    document.body.addEventListener("cartItemAdded", function(evt){
         htmx.addClass(htmx.find('#cart-button'), 'highlight');
         htmx.removeClass(htmx.find("#cart-button"), "highlight", 500);
     })
@@ -60,7 +60,7 @@
         </a>
 
     <div hx-get="/checkout/fragments/v1/minicart/amount"
-         hx-trigger="cartUpdated from:body"
+         hx-trigger="cartItemAdded from:body, cartItemRemoved from:body"
          hx-target="this"
          hx-swap="innerHTML"
     >

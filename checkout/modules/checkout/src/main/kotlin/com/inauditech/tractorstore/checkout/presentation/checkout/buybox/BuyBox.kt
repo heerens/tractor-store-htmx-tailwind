@@ -44,7 +44,7 @@ class BuyBox(
         model.addAttribute("buyBoxView", BuyBoxView(variant, true))
 
         httpServletResponse.addCookie(cartCookie.toHttpCookie())
-        httpServletResponse.setHeader("HX-Trigger", "cartUpdated")
+        httpServletResponse.setHeader("HX-Trigger", "cartItemAdded")
         return "buybox/BuyBox"
     }
 

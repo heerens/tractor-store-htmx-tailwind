@@ -42,6 +42,7 @@ class Cart(
 
         httpServletResponse.addCookie(cartCookie.toHttpCookie())
         model.addAttribute("cartView", view)
+        httpServletResponse.setHeader("HX-Trigger", "cartItemRemoved")
 
         return "cart/Cart"
     }
