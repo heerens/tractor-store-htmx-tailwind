@@ -38,7 +38,7 @@
                                hx-push-url="/product/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
                                hx-get="/product/fragments/v1/details/${productDetailsView.product.id.value}?sku=${variant.sku.value}"
                                hx-target="#hx-product-details"
-                               preload="mousedown"
+                               preload="mouseover"
                                preload-images="true"
                             >${variant.name}</a>
                         @endif
