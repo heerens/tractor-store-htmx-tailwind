@@ -12,14 +12,14 @@ PID_APP1=$!
 
 # Graceful start of all apps to cater AWS App Runner
 echo "Waiting for 'discover' app to start..."
-sleep 15
+sleep 20
 
 java -jar -Dspring.profiles.active="${ENVIRONMENT}" /app-checkout.jar &
 PID_APP2=$!
 
 # Graceful start of all apps to cater AWS App Runner
 echo "Waiting for 'checkout' app to start..."
-sleep 15
+sleep 20
 
 # Start NGINX in the background
 echo "Start NGINX (nginx-$ENVIRONMENT.conf)..."

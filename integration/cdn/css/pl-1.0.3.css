@@ -57,3 +57,7 @@ form {
     letter-spacing: 0.5rem;
 }
 
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+

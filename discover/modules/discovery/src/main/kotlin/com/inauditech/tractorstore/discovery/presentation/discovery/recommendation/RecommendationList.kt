@@ -53,7 +53,7 @@ data class RecommendationListView(
                 url = recommendation.image,
                 srcsetSizes = listOf(200, 400),
                 sizes = "200px",
-                alt = recommendation.name,
+                alt = "",
                 width = 200,
                 height = 200,
             )

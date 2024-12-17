@@ -29,6 +29,15 @@ class Cart(
         return "cart/Cart"
     }
 
+    @GetMapping("/checkout/{cartId}")
+    fun renderPage(
+        @CookieValue("c_cart") cartCookieValue: String = "",
+        @RequestParam cartId: String,
+        @RequestParam size: String,
+        httpServletResponse: HttpServletResponse,
+        model: ModelMap,
+    ): String = "cart/Cart"
+
     @DeleteMapping("/checkout/fragments/v1/cart")
     fun renderDelete(
         @CookieValue("c_cart") cartCookieValue: String = "",

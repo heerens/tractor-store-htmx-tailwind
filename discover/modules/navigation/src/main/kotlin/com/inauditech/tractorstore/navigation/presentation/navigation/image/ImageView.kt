@@ -9,5 +9,5 @@ data class ImageView(
     val height: Int,
 ) {
     val src get() = url.replace("[size]", srcsetSizes.first().toString())
-    val srcset get() = srcsetSizes.joinToString(",") { url.replace("[size]", it.toString()) + " w$it" }
+    val srcset get() = srcsetSizes.joinToString(",") { url.replace("[size]", it.toString()) + " ${it}w" }
 }

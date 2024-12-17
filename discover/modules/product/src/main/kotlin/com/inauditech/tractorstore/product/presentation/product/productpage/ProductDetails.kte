@@ -10,7 +10,7 @@
         <div class="md:w-1/2 lg:w-full">
             @template.product.image.Image(
                 imageView = productDetailsView.imageView,
-                classNames = "w-full"
+                classNames = "w-full aspect-square"
             )
         </div>
         <div class="md:w-1/2 lg:w-full">

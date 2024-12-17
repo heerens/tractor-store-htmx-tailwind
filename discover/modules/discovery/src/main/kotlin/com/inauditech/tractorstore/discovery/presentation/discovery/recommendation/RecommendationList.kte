@@ -13,7 +13,7 @@
             }
             <div class="${if(index != 3) "" else "sm:hidden lg:block"} text-center">
                 <a href="/product/${view.recommendation.productId.value}?sku=${view.recommendation.sku.value}">
-                    @template.discovery.image.Image(imageView = view.imageView, classNames = "mb-2 w-full")
+                    @template.discovery.image.Image(imageView = view.imageView, classNames = "mb-2 w-full aspect-square")
                     ${view.recommendation.name}
                 </a>
             </div>
