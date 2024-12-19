@@ -72,9 +72,10 @@ And this is how one domain is including another.
 - 🟣 `discovery`
     - 📄 Category
     - 🧩 Recommendations (🔴 home, 🟢 product detail, 🟡 cart)
-    - 🧩 Store Picker (🟡 checkout)    - 
+    - 🧩 Store Picker (🟡 checkout)    
 - 🟢 `product`
     - 📄 Product detail
+    - 🧩 Ratings (🟣 recommendations) 
 - 🟡 `checkout`
     - 📄 Cart
     - 📄 Checkout

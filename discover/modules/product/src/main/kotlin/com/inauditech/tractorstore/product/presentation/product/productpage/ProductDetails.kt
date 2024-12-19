@@ -5,6 +5,8 @@ import com.inauditech.tractorstore.product.domain.ProductId
 import com.inauditech.tractorstore.product.domain.ProductRepository
 import com.inauditech.tractorstore.product.domain.Variant
 import com.inauditech.tractorstore.product.presentation.product.image.ImageView
+import com.inauditech.tractorstore.product.presentation.product.rating.Rating
+import com.inauditech.tractorstore.product.presentation.product.rating.RatingView
 import jakarta.servlet.http.HttpServletResponse
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -18,6 +20,7 @@ import org.springframework.web.client.HttpServerErrorException
 @Controller
 class ProductDetails(
     val productRepository: ProductRepository,
+    val rating: Rating,
 ) {
     @GetMapping("/product/fragments/v1/details/{productId}")
     fun render(
@@ -50,6 +53,7 @@ class ProductDetails(
             ProductDetailsView(
                 product = product,
                 variant = variant,
+                ratingView = rating.createView(productId),
             )
         return productDetailsView
     }
@@ -57,6 +61,7 @@ class ProductDetails(
     data class ProductDetailsView(
         val product: Product,
         val variant: Variant,
+        val ratingView: RatingView,
     ) {
         val fullName = "${product.name} - ${variant.name}"
         val imageView: ImageView

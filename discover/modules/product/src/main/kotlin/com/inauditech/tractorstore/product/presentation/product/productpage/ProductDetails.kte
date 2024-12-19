@@ -16,11 +16,14 @@
         <div class="md:w-1/2 lg:w-full">
             <div class="mb-8">
                 <h2 class="mb-8 text-5xl tracking-tight">${productDetailsView.product.name}</h2>
-                <ul class="mb-14">
+                <ul class="mb-4">
                     @for(highlight in productDetailsView.product.highlights)
                     <li class="mb-2">${highlight}</li>
                     @endfor
                 </ul>
+                <div class="mb-14">
+                    @template.product.rating.Rating(ratingView = productDetailsView.ratingView)
+                </div>
                 <ul class="flex flex-wrap items-center gap-6"
                     hx-ext="preload"
                 >

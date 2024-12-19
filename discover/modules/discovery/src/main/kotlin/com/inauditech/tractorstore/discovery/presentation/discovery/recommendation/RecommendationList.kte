@@ -14,8 +14,15 @@
             <div class="${if(index != 3) "" else "sm:hidden lg:block"} text-center">
                 <a href="/product/${view.recommendation.productId.value}?sku=${view.recommendation.sku.value}">
                     @template.discovery.image.Image(imageView = view.imageView, classNames = "mb-2 w-full aspect-square")
+                    <div class="h-12">
                     ${view.recommendation.name}
+                    </div>
                 </a>
+                <div class="my-2 h-8 flex justify-center"
+                     hx-get="/product/fragments/v1/rating/${view.recommendation.productId.value}"
+                     hx-trigger="load"
+                >
+                </div>
             </div>
         @endfor
     </div>
