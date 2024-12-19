@@ -1,3 +1,4 @@
+@import com.inauditech.tractorstore.checkout.presentation.checkout.cart.Cart
 @import com.inauditech.tractorstore.checkout.presentation.checkout.minicart.MiniCartView
 
 @param miniCartView: MiniCartView
@@ -42,7 +43,7 @@
     }
 </style>
 <script>
-    document.body.addEventListener("cartItemAdded", function(evt){
+    document.body.addEventListener("${Cart.CART_ITEM_ADDED_EVENT}", function(evt){
         htmx.addClass(htmx.find('#cart-button'), 'highlight');
         htmx.removeClass(htmx.find("#cart-button"), "highlight", 500);
     })
@@ -60,7 +61,7 @@
         </a>
 
     <div hx-get="/checkout/fragments/v1/minicart/amount"
-         hx-trigger="cartItemAdded from:body, cartItemRemoved from:body"
+         hx-trigger="${Cart.CART_ITEM_ADDED_EVENT} from:body, ${Cart.CART_ITEM_REMOVED_EVENT} from:body"
          hx-target="this"
          hx-swap="innerHTML"
     >

@@ -1,4 +1,4 @@
-# The Tractor Store - HTMX and Tailwind 
+# The Tractor Store - Micro Frontends with HTMX and Tailwind 
 
 A micro frontends sample implementation of [The Tractor Store](https://micro-frontends.org/tractor-store/) built with Spring Boot + JTE, ESI, HTMX and Tailwind. 
 

@@ -3,6 +3,7 @@ package com.inauditech.tractorstore.checkout.presentation.checkout.buybox
 import com.inauditech.tractorstore.checkout.domain.SellableVariant
 import com.inauditech.tractorstore.checkout.domain.Sku
 import com.inauditech.tractorstore.checkout.domain.VariantService
+import com.inauditech.tractorstore.checkout.presentation.checkout.cart.Cart
 import com.inauditech.tractorstore.checkout.presentation.checkout.cart.CartCookie
 import jakarta.servlet.http.HttpServletResponse
 import mu.KLogging
@@ -44,11 +45,12 @@ class BuyBox(
         model.addAttribute("buyBoxView", BuyBoxView(variant, true))
 
         httpServletResponse.addCookie(cartCookie.toHttpCookie())
-        httpServletResponse.setHeader("HX-Trigger", "cartItemAdded")
+        httpServletResponse.setHeader("HX-Trigger", Cart.CART_ITEM_ADDED_EVENT)
         return "buybox/BuyBox"
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+    }
 }
 
 data class BuyBoxView(

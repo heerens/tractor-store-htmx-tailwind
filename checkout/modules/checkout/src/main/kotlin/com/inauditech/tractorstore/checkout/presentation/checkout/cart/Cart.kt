@@ -51,7 +51,7 @@ class Cart(
 
         httpServletResponse.addCookie(cartCookie.toHttpCookie())
         model.addAttribute("cartView", view)
-        httpServletResponse.setHeader("HX-Trigger", "cartItemRemoved")
+        httpServletResponse.setHeader("HX-Trigger", CART_ITEM_REMOVED_EVENT)
 
         return "cart/Cart"
     }
@@ -69,7 +69,10 @@ class Cart(
         return view
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val CART_ITEM_ADDED_EVENT = "cartItemAdded"
+        const val CART_ITEM_REMOVED_EVENT = "cartItemRemoved"
+    }
 }
 
 data class CartView(
