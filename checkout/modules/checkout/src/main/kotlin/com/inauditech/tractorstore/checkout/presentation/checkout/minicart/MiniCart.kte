@@ -61,7 +61,7 @@
         </a>
 
     <div hx-get="/checkout/fragments/v1/minicart/amount"
-         hx-trigger="${Cart.CART_ITEM_ADDED_EVENT} from:body, ${Cart.CART_ITEM_REMOVED_EVENT} from:body"
+         hx-trigger="load, ${Cart.CART_ITEM_ADDED_EVENT} from:body, ${Cart.CART_ITEM_REMOVED_EVENT} from:body"
          hx-target="this"
          hx-swap="innerHTML"
     >
