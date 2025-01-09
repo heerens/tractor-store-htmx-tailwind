@@ -1,0 +1,65 @@
+@import com.inauditech.tractorstore.account.presentation.account.login.LoginPageView
+
+@param loginPageView: LoginPageView 
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Login</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.3/htmx.min.js" integrity="sha512-dQu3OKLMpRu85mW24LA1CUZG67BgLPR8Px3mcxmpdyijgl1UpCM1RtJoQP6h8UkufSnaHVRTUx98EQT9fcKohw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">
+
+</head>
+<body data-boundary-page="explore">
+@template.account.include.inculde(url = "/navigation/fragments/v1/header")
+
+<div class="ts-container-px">
+    <h2 class="mb-4 text-2xl">Account Login</h2>
+
+
+    @if(loginPageView.error)
+        <div class="mb-4 text-sm text-red-500 font-bold">
+            Please check username and password.
+        </div>
+    @endif
+    
+    <form class="mb-96" action="/account/login/submit" method="post">
+
+
+        <div class="mb-8 flex flex-col gap-x-16 gap-y-8">
+            <div class="flex items-center gap-x-8">
+                <label class="w-20" for="username">Username</label>
+                <input value="customer@example.com"
+                       class="w-64 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                       type="text"
+                       id="username"
+                       name="username"
+                >
+            </div>
+            <div class="flex items-center gap-x-8">
+                <label class="w-20" for="password">Password</label>
+                <input value="leeT!shoPR123"
+                       class="w-64 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                       type="password"
+                       id="password" name="password"
+
+                >
+            </div>
+        </div>
+
+        @template.account.button.Button(label = "Login", style="primary", type ="submit" )
+
+
+
+    </form>
+
+
+</div>
+
+@template.account.include.inculde(url = "/navigation/fragments/v1/footer")
+</body>
+</html>

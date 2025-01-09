@@ -14,7 +14,22 @@
 @template.account.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px">
-    TODO
+    <h2 class="mb-4 text-2xl">Account Overview</h2>
+
+    <div class="mb-12">
+        This is a protected page...
+    </div>
+
+    <div class="mb-12">
+        Authentication is done by the 'account' domain and a JWT cookie is set on successful login. <br>
+        Other domains and teams can use this JWT for identification and security.
+    </div>
+
+    <div>
+        <a href="/account/logout">
+            @template.account.button.Button(label = "Logout", style="primary" )
+        </a>
+    </div>
 </div>
 
 @template.account.include.inculde(url = "/navigation/fragments/v1/footer")

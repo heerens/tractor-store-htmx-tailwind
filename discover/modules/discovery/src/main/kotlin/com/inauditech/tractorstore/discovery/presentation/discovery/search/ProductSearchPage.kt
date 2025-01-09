@@ -17,7 +17,7 @@ class ProductSearchPage(
         model: ModelMap,
         @PathVariable(required = false) key: String? = null,
     ): String {
-        val searchForm = SearchForm()
+        val searchForm = SearchForm(key)
         model.addAttribute("searchForm", searchForm)
         model.addAttribute("searchResultView", searchResult.createView(searchForm))
         return "search/ProductSearchPage"
