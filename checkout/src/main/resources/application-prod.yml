@@ -1,3 +1,11 @@
 
+
+# 'checkout' domain configuration
+
 checkout:
   product-feed-url: http://localhost:8080/product/api/v1/feed
+
+# 'account' domain configuration
+
+account:
+  base-url: https://tractorstore.inauditech.com

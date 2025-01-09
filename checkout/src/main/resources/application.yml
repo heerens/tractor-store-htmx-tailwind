@@ -16,3 +16,6 @@ checkout:
 
 
 # 'account' domain configuration
+
+account:
+  base-url: http://localhost:3000

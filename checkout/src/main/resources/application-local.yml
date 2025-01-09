@@ -6,3 +6,7 @@ gg:
 
 checkout:
   product-feed-url: http://localhost:8080/product/api/v1/feed
+
+
+account:
+  base-url: http://localhost:3000

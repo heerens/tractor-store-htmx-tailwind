@@ -2,6 +2,7 @@ package com.inauditech.tractorstore.account.config
 
 import com.inauditech.tractorstore.account.authentication.JwtCookieAuthenticationFilter
 import com.inauditech.tractorstore.account.authentication.JwtCookieAuthenticationSuccessHandler
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val jwtCookieAuthenticationFilter: JwtCookieAuthenticationFilter,
     private val jwtCookieAuthenticationSuccessHandler: JwtCookieAuthenticationSuccessHandler,
+    @Value("\${account.base-url}") val basedUrl: String = "",
 ) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -55,16 +57,16 @@ class SecurityConfig(
                 it.requestMatchers("/account/dashboard").authenticated()
                 it.anyRequest().permitAll()
             }.formLogin {
-                it.loginPage("/account/login")
+                it.loginPage("$basedUrl/account/login")
                 it.loginProcessingUrl("/account/login/submit")
-                it.failureUrl("/account/login?error=true")
+                it.failureUrl("$basedUrl/account/login?error=true")
                 // store cookie
                 it.successHandler(jwtCookieAuthenticationSuccessHandler)
                 it.permitAll()
             }.logout { logout ->
                 logout.logoutUrl("/account/logout")
                 logout.deleteCookies("jwt")
-                logout.logoutSuccessUrl("/account/login?logout")
+                logout.logoutSuccessUrl("$basedUrl/account/login?logout")
                 logout.permitAll()
             }
             // use JTW or user/password for authentication
