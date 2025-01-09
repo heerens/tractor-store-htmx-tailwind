@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val jwtCookieAuthenticationFilter: JwtCookieAuthenticationFilter,
     private val jwtCookieAuthenticationSuccessHandler: JwtCookieAuthenticationSuccessHandler,
-    @Value("\${account.base-url}") val basedUrl: String = "",
+    @Value("\${account.base-url}") val basedUrl: String,
 ) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
