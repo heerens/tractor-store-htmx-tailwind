@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/cdn/css/pl-1.0.3.css">
 
 </head>
-<body data-boundary-page="explore">
+<body data-boundary-page="account">
 @template.account.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px">

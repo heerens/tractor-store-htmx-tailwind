@@ -13,29 +13,46 @@
     <h3 class="mb-8 text-xl">Personal Data</h3>
 
     <div class="mb-8 flex flex-wrap gap-x-16 gap-y-8">
-        <div class="flex items-center gap-x-8">
-            <label class="w-20" for="c_firstname">First name</label>
-            <input value="${orderForm.firstName}"
-                    class="border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
-                    type="text"
-                    id="c_firstname" name="firstName"
-                    hx-post="/checkout/fragments/v1/orderform/validate"
-                    hx-trigger="keyup delay:250ms"
-                    hx-target="#hx-order-form"
-            >
+        <div id="first-name-field"
+             hx-post="/checkout/fragments/v1/orderform/validate"
+             hx-trigger="keyup delay:250ms"
+             hx-target="this"
+             hx-select="#first-name-field"
+             hx-select-oob="#submit-button"
+        >
+            <div class="flex items-center gap-x-8">
+                <label class="w-20" for="first-name">First name</label>
+                <input value="${orderForm.firstName}"
+                        class="border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                        type="text"
+                        id="first-name"
+                        name="firstName"
+                >
+            </div>
+            <div class="text-red-500 text-sm pt-2 h-8">
+                ${errors?.getFieldError("firstName")?.defaultMessage ?: ""}
+            </div>
         </div>
 
-        <div class="flex items-center gap-x-8">
-            <label class="w-20" for="c_lastname">Last name</label>
-            <input value="${orderForm.lastName}"
-                   class="border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
-                   type="text"
-                   id="c_lastname"
-                   name="lastName"
-                   hx-post="/checkout/fragments/v1/orderform/validate"
-                   hx-trigger="keyup delay:250ms"
-                   hx-target="#hx-order-form"
-            >
+        <div id="last-name-field"
+             hx-post="/checkout/fragments/v1/orderform/validate"
+             hx-trigger="keyup delay:250ms"
+             hx-target="this"
+             hx-select="#last-name-field"
+             hx-select-oob="#submit-button"
+        >
+            <div class="flex items-center gap-x-8">
+                <label class="w-20" for="last-name">Last name</label>
+                <input value="${orderForm.lastName}"
+                       class="border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                       type="text"
+                       id="last-name"
+                       name="lastName"
+                >
+            </div>
+            <div class="text-red-500 text-sm pt-2 h-8">
+                ${errors?.getFieldError("lastName")?.defaultMessage ?: ""}
+            </div>
         </div>
     </div>
 
@@ -46,7 +63,7 @@
     <div class="mb-8 md:w-1/2">
         <script>
             document.body.addEventListener("storeSelected", function(evt){
-                let input = document.getElementById("c_storeId");
+                let input = document.getElementById("store-id");
                 input.value = evt.detail.storeId;
                 input.dispatchEvent(new Event('change'));
             })
@@ -54,25 +71,34 @@
         @template.checkout.include.inculde(url = "/navigation/fragments/v1/storepicker" + (orderForm.storeId?.let { "?storeId=$it" } ?: "") )
     </div>
 
-    <div class="mb-8 flex flex-wrap gap-x-16">
-        <div class="flex items-center gap-x-8">
-            <label class="w-20" for="c_storeId">Store ID</label>
-            <input value="${orderForm.storeId}"
-                   class="text-gray-500 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
-                   type="text"
-                   id="c_storeId"
-                   name="storeId"
-                   hx-post="/checkout/fragments/v1/orderform/validate"
-                   hx-trigger="change delay:250ms"
-                   hx-target="#hx-order-form"
-            >
+    <div id="store-id-field"
+         hx-post="/checkout/fragments/v1/orderform/validate"
+         hx-trigger="change delay:250ms"
+         hx-target="this"
+         hx-select="#store-id-field"
+         hx-select-oob="#submit-button"
+    >
+        <div class="mb-8 flex flex-wrap gap-x-16">
+                <div class="flex items-center gap-x-8">
+                    <label class="w-20" for="store-id">Store ID</label>
+                    <input value="${orderForm.storeId}"
+                           class="text-gray-500 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                           type="text"
+                           id="store-id"
+                           name="storeId"
+                           readonly
+                    >
+                </div>
+                <div class="text-red-500 text-sm pt-2 h-8">
+                    ${errors?.getFieldError("storeId")?.defaultMessage ?: ""}
+                </div>
         </div>
     </div>
 
     @template.checkout.divider.line()
 
     <div class="flex flex-wrap gap-x-48 gap-y-8 justify-end sm:justify-between sm:flex-row-reverse">
-        <div hx-post="/checkout/fragments/v1/orderform" hx-target="#hx-order-form">
+        <div id="submit-button" hx-post="/checkout/fragments/v1/orderform" hx-target="#hx-order-form">
             @template.checkout.button.Button(label = "Place Order", style="primary", disabled = hasErrors || orderForm.empty())
         </div>
         <a href="/checkout/cart">

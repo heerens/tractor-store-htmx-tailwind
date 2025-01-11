@@ -14,12 +14,14 @@
             <div class="">${storeView.store.city}</div>
         </div>
     @endif
+    <div id="hx-modal-placeholder">
+        <!--  -->
+    </div>
     <div hx-get="/navigation/fragments/v1/storepicker/modal"
-         hx-target="this"
-         hx-swap="outerHTML"
+         hx-target="#hx-modal-placeholder"
     >
         @template.navigation.button.Button(
-            label = "Choose a Store ",
+            label = "Choose a Store",
             style = "secondary",
             classNames = "w-full"
         )
