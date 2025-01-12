@@ -15,7 +15,7 @@
     <div class="mb-8 flex flex-wrap gap-x-16 gap-y-8">
         <div id="first-name-field"
              hx-post="/checkout/fragments/v1/orderform/validate"
-             hx-trigger="keyup delay:250ms"
+             hx-trigger="keyup delay:250ms from:#first-name"
              hx-target="this"
              hx-select="#first-name-field"
              hx-select-oob="#submit-button"
@@ -36,7 +36,7 @@
 
         <div id="last-name-field"
              hx-post="/checkout/fragments/v1/orderform/validate"
-             hx-trigger="keyup delay:250ms"
+             hx-trigger="keyup delay:250ms from:#last-name"
              hx-target="this"
              hx-select="#last-name-field"
              hx-select-oob="#submit-button"
@@ -61,19 +61,19 @@
     <h3 class="mb-8 text-xl">Store Pickup</h3>
 
     <div class="mb-8 md:w-1/2">
-        <script>
-            document.body.addEventListener("storeSelected", function(evt){
-                let input = document.getElementById("store-id");
-                input.value = evt.detail.storeId;
-                input.dispatchEvent(new Event('change'));
-            })
-        </script>
         @template.checkout.include.inculde(url = "/navigation/fragments/v1/storepicker" + (orderForm.storeId?.let { "?storeId=$it" } ?: "") )
     </div>
 
+    <script>
+        document.body.addEventListener("storeSelected", function(evt){
+            let input = document.getElementById("store-id");
+            input.value = evt.detail.storeId;
+            input.dispatchEvent(new Event('change'));
+        })
+    </script>
     <div id="store-id-field"
          hx-post="/checkout/fragments/v1/orderform/validate"
-         hx-trigger="change delay:250ms"
+         hx-trigger="change from:#store-id"
          hx-target="this"
          hx-select="#store-id-field"
          hx-select-oob="#submit-button"
