@@ -17,7 +17,9 @@ The architecture of the application is based on the [Radically Simple Web Archit
 There are two teams that both run a Modular Monolith (Spring Boot app) containing multiple Self Contained Systems (Module). Each SCS represents an independent business domain (DDD).
 
 Routing, Page Assembly (Server-Side Integration) and Pattern Library hosting is part of a NGINX. 
- 
+
+Authentication is done by the 'account' domain and a JWT cookie is set on successful login. 
+Other domains and teams can use this JWT for identification and security.
 
 ### Technologies
 
@@ -32,6 +34,7 @@ List of techniques used in this implementation.
 | 🧩 Server-Side Integration | ESI + Routing via [nginx]                   |
 | 📣 Communication           | Custom Events + HTMX Attributes ([htmx])    |
 | 🗺️ Navigation             | MPA, HTMX patical updates, Hard-Nav Between |
+| 🔒 Authentication          | user/password + JWT                         |
 | 🎨 Styling                 | [tailwind] + Custom CSS                     |
 | 🍱 Design System           | Demo Pattern Lib [pattern-lib]              |
 | 🔮 Discovery               | None (Hardcoded URLs for Now)               |
@@ -66,8 +69,8 @@ And this is how one domain is including another.
 - 🔴 `navigation`
     - 📄 Home
     - 📄 Stores
-    - 🧩 Header (🔴🟢🟡🟣 every page, except checkout)
-    - 🧩 Footer (🔴🟢🟡🟣 every page)
+    - 🧩 Header (🔴🟢🟡🟣🔵 every page, except checkout)
+    - 🧩 Footer (🔴🟢🟡🟣🔵 every page)
     - 🧩 Store Picker (🟡 checkout)
 - 🟣 `discovery`
     - 📄 Category
@@ -82,6 +85,10 @@ And this is how one domain is including another.
     - 📄 Thank you
     - 🧩 Mini Cart (🔴 header)
     - 🧩 Add To Cart Button (🟢 product details)
+- 🔵 `account`
+    - 📄 Login
+    - 📄 Account Overview
+    - 🧩 Login Button (🔴 header)  
 
 
 ### Limitations & Remarks 
