@@ -15,11 +15,11 @@
 <div class="ts-container-px">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 text-center mb-12">
         <a class="hover:underline" href="/products/classic">
-            <img class="mb-2" src="https://blueprint.the-tractor.store/cdn/img/scene/500/classics.webp" srcset="https://blueprint.the-tractor.store/cdn/img/scene/500/classics.webp 500w, https://blueprint.the-tractor.store/cdn/img/scene/1000/classics.webp 1000w" sizes="100vw, (min-width: 500px) 50vw" alt="">
+            <img class="mb-2" src="https://inauditech.twic.pics/tractorstore/cdn/img/scene/500/classics.webp" srcset="https://inauditech.twic.pics/tractorstore/cdn/img/scene/500/classics.webp 500w, https://inauditech.twic.pics/tractorstore/cdn/img/scene/1000/classics.webp 1000w" sizes="100vw, (min-width: 500px) 50vw" alt="">
             Classic Tractors
         </a>
         <a class="hover:underline" href="/products/autonomous">
-            <img class="mb-2" src="https://blueprint.the-tractor.store/cdn/img/scene/500/autonomous.webp" srcset="https://blueprint.the-tractor.store/cdn/img/scene/500/autonomous.webp 500w, https://blueprint.the-tractor.store/cdn/img/scene/1000/autonomous.webp 1000w" sizes="100vw, (min-width: 500px) 50vw" alt="">
+            <img class="mb-2" src="https://inauditech.twic.pics/tractorstore/cdn/img/scene/500/autonomous.webp" srcset="https://inauditech.twic.pics/tractorstore/cdn/img/scene/500/autonomous.webp 500w, https://inauditech.twic.pics/tractorstore/cdn/img/scene/1000/autonomous.webp 1000w" sizes="100vw, (min-width: 500px) 50vw" alt="">
             Autonomous Tractors
         </a>
     </div>

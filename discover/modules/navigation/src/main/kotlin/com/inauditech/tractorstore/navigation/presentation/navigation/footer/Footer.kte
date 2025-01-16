@@ -7,7 +7,7 @@
 
             <div class="mb-8 flex items-start gap-x-4">
                 <!-- please leave this part untouched -->
-                <img class="mt-1" src="https://blueprint.the-tractor.store/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="45" height="40">
+                <img class="mt-1" src="https://inauditech.twic.pics/tractorstore/cdn/img/neulandlogo.svg" alt="neuland - Büro für Informatik" width="45" height="40">
                 <p>
                     based on
                     <a class="underline text-red-400" href="https://micro-frontends.org/tractor-store/" target="_blank">

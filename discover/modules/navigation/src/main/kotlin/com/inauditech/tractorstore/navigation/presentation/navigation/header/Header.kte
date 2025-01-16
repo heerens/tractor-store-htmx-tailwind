@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center flex-wrap nav-shadow-b pt-2 pb-6 px-4 border-b border-gray-200">
         <div class="w-1/2 lg:w-64">
             <a href="/">
-                <img class="w-64" src="https://blueprint.the-tractor.store/cdn/img/logo.svg" alt="Micro Frontends - Tractor Store">
+                <img class="w-64" src="https://inauditech.twic.pics/tractorstore/cdn/img/logo.svg" alt="Micro Frontends - Tractor Store">
             </a>
         </div>
         <div class="lg:order-last text-center flex p-2 py-6 lg:p-6 gap-x-2">
