@@ -1,5 +1,6 @@
 package com.inauditech.tractorstore.product.presentation.product.productpage
 
+import com.inauditech.tractorstore.product.presentation.product.image.ImageView
 import mu.KLogging
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
@@ -36,7 +37,18 @@ class ProductPage(
 
     data class ProductPageView(
         val productDetailsView: ProductDetails.ProductDetailsView,
-    )
+    ) {
+        val variantImagesView: List<ImageView>
+            get() =
+                productDetailsView.product.variants.map { variant ->
+                    ImageView(
+                        url = variant.image,
+                        srcsetSizes = listOf(400, 800),
+                        sizes = "400px",
+                        alt = variant.name,
+                    )
+                }
+    }
 
     companion object : KLogging()
 }

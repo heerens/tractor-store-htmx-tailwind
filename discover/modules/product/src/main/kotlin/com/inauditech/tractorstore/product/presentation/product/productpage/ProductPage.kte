@@ -13,6 +13,10 @@
     @template.product.head.common()
     @template.product.head.favicon()
 
+
+    @for(imageView in productPageView.variantImagesView)
+        <link rel="prefetch" href="${imageView.src}" as="image">
+    @endfor
 </head>
 <body data-boundary-page="decide">
 @template.product.include.inculde(url = "/navigation/fragments/v1/header")
