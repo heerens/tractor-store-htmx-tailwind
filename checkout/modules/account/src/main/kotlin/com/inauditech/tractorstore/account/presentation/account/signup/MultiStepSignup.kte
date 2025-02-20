@@ -1,0 +1,151 @@
+@import com.inauditech.tractorstore.account.presentation.account.signup.Direction
+@import com.inauditech.tractorstore.account.presentation.account.signup.SignupForm
+@import com.inauditech.tractorstore.account.presentation.account.signup.Step
+@import org.springframework.validation.BindingResult
+
+@param steppedDirection: Direction? = null
+@param signupForm: SignupForm
+@param errors: BindingResult? = null
+
+
+<form id="hx-order-form" class="w-full">
+
+    !{ val currentStepIndex = signupForm.step.ordinal}
+    <input type="hidden" value="${signupForm.step}" name="step">
+
+    <style>
+        .step-${currentStepIndex} {
+            display: inherit;
+        }
+
+        @if(steppedDirection == Direction.NEXT)
+
+            .htmx-added .step-${currentStepIndex-1} {
+                display: inherit;
+            }
+
+            @keyframes slide-to-left {
+                to { transform: translateX(-100%); }
+            }
+
+            .htmx-added .step {
+                animation:  200ms both running slide-to-left;
+            }
+        @endif
+
+        @if(steppedDirection == Direction.PREV)
+
+            .htmx-added .step-${currentStepIndex+1} {
+                display: inherit;
+            }
+
+            @keyframes slide-from-left {
+                from { transform: translateX(-100%); }
+            }
+
+            .htmx-added .step {
+                animation: 200ms both running slide-from-left;
+            }
+        @endif
+    </style>
+
+    <div class="overflow-x-hidden w-full">
+        <div class="flex w-full">
+            <fieldset id="step-customer" class="step-0 step hidden h-96 w-full flex-col flex-shrink-0">
+                <h3 class="mb-8 text-xl">Customer</h3>
+                @template.account.signup.Input(
+                    label = "Full Name",
+                    value = signupForm.customer.fullName,
+                    id ="customer-full-name",
+                    name = "customer.fullName",
+                    errors = errors
+                )
+                @template.account.signup.Input(
+                    label = "Email",
+                    value = signupForm.customer.email,
+                    id ="customer-email",
+                    name = "customer.email",
+                    errors = errors
+                )
+                @template.account.signup.Input(
+                    label = "Password",
+                    value = signupForm.customer.password,
+                    id ="customer-password",
+                    name = "customer.password",
+                    errors = errors,
+                    type = "text"
+                )
+            </fieldset>
+            <fieldset id="step-company" class="step-1 step hidden h-96 w-full flex-col flex-shrink-0">
+                <h3 class="mb-8 text-xl">Company</h3>
+                @template.account.signup.Input(
+                    label = "Name",
+                    value = signupForm.company.name,
+                    id ="company-name",
+                    name = "company.name",
+                    errors = errors
+                )
+                @template.account.signup.Input(
+                    label = "Tax Id",
+                    value = signupForm.company.vatId,
+                    id ="company-vat-id",
+                    name = "company.vatId",
+                    errors = errors
+                )
+            </fieldset>
+            <fieldset id="step-address" class="step-2 step hidden h-96 w-full flex-col flex-shrink-0">
+                <h3 class="mb-8 text-xl">Address</h3>
+                @template.account.signup.Input(
+                    label = "Street",
+                    value = signupForm.address.street,
+                    id ="address-street",
+                    name = "address.street",
+                    errors = errors
+                )
+                @template.account.signup.Input(
+                    label = "City",
+                    value = signupForm.address.city,
+                    id ="address-city",
+                    name = "address.city",
+                    errors = errors
+                )
+                @template.account.signup.Input(
+                    label = "Zip Code",
+                    value = signupForm.address.zip,
+                    id ="address-zip",
+                    name = "address.zip",
+                    errors = errors
+                )
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="flex justify-between">
+
+        <div>
+            @if(!signupForm.step.isFirst())
+                <div id="submit-button-back"
+                     hx-post="/account/fragments/v1/signupform/prev"
+                     hx-target="#hx-order-form"
+                     hx-swap="outerHTML settle:200ms"
+                >
+                    @template.account.button.Button(label = "Back", style="secondary" )
+                </div>
+            @endif
+        </div>
+
+
+        <div id="submit-button-next"
+             hx-post="/account/fragments/v1/signupform/next"
+             hx-target="#hx-order-form"
+             hx-swap="outerHTML settle:200ms"
+        >
+            @if(signupForm.step.isLast())
+                @template.account.button.Button(label = "Submit", style="primary")
+            @else
+                @template.account.button.Button(label = "Next", style="primary")
+            @endif
+        </div>
+    </div>
+
+</form>

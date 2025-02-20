@@ -18,44 +18,43 @@
 @template.account.include.inculde(url = "/navigation/fragments/v1/header")
 
 <div class="ts-container-px">
-    <h2 class="mb-4 text-2xl">Account Login</h2>
+    <h2 class="mb-4 text-2xl sm:text-center">Account Login</h2>
 
 
-    @if(loginPageView.error)
-        <div class="mb-4 text-sm text-red-500 font-bold">
-            Please check username and password.
-        </div>
-    @endif
-    
-    <form class="mb-96" action="/account/login/submit" method="post">
+    <div class="flex justify-center mb-96">
+        <div class="w-full sm:w-2/3 md:w-1/2 p-4 border rounded-2xl">
 
-
-        <div class="mb-8 flex flex-col gap-x-16 gap-y-8">
-            <div class="flex items-center gap-x-8">
-                <label class="w-20" for="username">Username</label>
-                <input value="customer@example.com"
-                       class="w-64 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
-                       type="text"
-                       id="username"
-                       name="username"
-                >
+        @if(loginPageView.error)
+            <div class="mb-4 text-sm text-red-500 font-bold">
+                Please check username and password.
             </div>
-            <div class="flex items-center gap-x-8">
-                <label class="w-20" for="password">Password</label>
-                <input value="leeT!shoPR123"
-                       class="w-64 border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
-                       type="password"
-                       id="password" name="password"
+        @endif
 
-                >
-            </div>
+            <form class="" action="/account/login/submit" method="post">
+                <div class="mb-2 flex flex-col gap-x-16  ">
+                    @template.account.signup.Input(
+                        label = "Email",
+                        value = "customer@example.com",
+                        id ="username",
+                        name = "username"
+                    )
+
+                    @template.account.signup.Input(
+                        label = "Password",
+                        value = "leeT!shoPR123",
+                        id ="password",
+                        name = "password",
+                        type  = "password"
+                    )
+                </div>
+                @template.account.button.Button(label = "Login", style="primary", type ="submit", classNames="mb-8" )
+
+                <div class="mb-4">
+                    No Account? <a class="underline text-red-400" href="/account/signup">Sign up</a> for a new account.
+                </div>
+            </form>
         </div>
-
-        @template.account.button.Button(label = "Login", style="primary", type ="submit" )
-
-
-
-    </form>
+    </div>
 
 
 </div>

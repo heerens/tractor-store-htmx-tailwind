@@ -1,0 +1,30 @@
+@import com.inauditech.tractorstore.account.presentation.account.signup.SignupForm
+@import org.springframework.validation.BindingResult
+
+@param label: String
+@param value: String?
+@param id: String
+@param name: String
+@param type: String = "text"
+@param errors: BindingResult? = null
+
+
+
+
+<div class="mb-2 flex flex-wrap gap-x-16 gap-y-8">
+    <div id="${id}-field" class="w-full">
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-x-8">
+            <label class="w-20 mb-2 sm:mb-0" for="${id}">${label}</label>
+            <input value="${value}"
+                    class="flex-grow border border-gray-300 rounded-xl h-10 shadow-inner shadow-lg px-2"
+                    type="${type}"
+                    id="${id}"
+                    name="${name}"
+            >
+        </div>
+        <div class="text-red-500 text-sm pt-2 h-8">
+            ${errors?.getFieldError(name)?.defaultMessage ?: ""}
+        </div>
+    </div>
+</div>
+
