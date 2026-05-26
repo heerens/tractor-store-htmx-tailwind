@@ -39,13 +39,17 @@
                 ssr-only, htmx, tailwind, <a class="underline text-red-400"  href="/storybook/index.html" target="_blank">patten lib</a>
             </p>
 
-            <div class="flex gap-x-2 items-center">
+            <div class="mb-2 flex gap-x-2 items-center">
                 <div>
                 source code on
                 </div>
                 <a class="underline text-red-400" href="https://github.com/heerens/tractor-store-htmx-tailwind" target="_blank">
                     github
                 </a>
+            </div>
+
+            <div class="mb-2">
+                Version: ---
             </div>
         </div>
     </div>
