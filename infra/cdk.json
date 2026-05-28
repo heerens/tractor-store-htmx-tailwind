@@ -1,0 +1,14 @@
+{
+  "app": "./gradlew --quiet --console=plain run",
+  "watch": {
+    "include": ["src/**/*.kt"],
+    "exclude": ["build/**", ".gradle/**", "cdk.out/**"]
+  },
+  "context": {
+    "env": "dev",
+    "@aws-cdk/core:newStyleStackSynthesis": true,
+    "@aws-cdk/aws-iam:minimizePolicies": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-ecr:lifecyclePolicyAllowsHigherRulePriority": true
+  }
+}
