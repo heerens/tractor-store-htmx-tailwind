@@ -40,6 +40,14 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ${{ runner.os }}-gradle
 
+      - name: Inject git SHA into discover application.yml
+        run: |
+          # Flat-property form so it doesn't conflict with any existing nested block.
+          # Spring's relaxed binding maps `app.git-sha` to the @Value("${app.git-sha}")
+          # read by the footer controller. Only `discover` serves the footer fragment.
+          echo "" >> discover/src/main/resources/application.yml
+          echo "app.git-sha: ${GITHUB_SHA:0:7}" >> discover/src/main/resources/application.yml
+
       - name: Build all JARs with Gradle
         run: ./build.sh
 

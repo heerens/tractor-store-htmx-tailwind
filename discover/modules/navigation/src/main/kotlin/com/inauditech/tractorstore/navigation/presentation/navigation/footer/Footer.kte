@@ -1,5 +1,4 @@
-
-
+@param gitSha: String = "local"
 
 <footer class="ts-container mt-12 overflow-hidden pt-10" data-boundary="explore">
     <div class="flex flex-wrap nav-shadow-b pt-6 pb-12 px-6 border-t border-gray-200">
@@ -49,7 +48,7 @@
             </div>
 
             <div class="mb-2">
-                Version: latest
+                Version: ${gitSha}
             </div>
         </div>
     </div>
