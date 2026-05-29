@@ -1,0 +1,116 @@
+name: infra-deploy
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra-deploy.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra-deploy.yml'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: 'eu-central-1'
+  CDK_VERSION: '2.170.0'
+  DEPLOY_ROLE_ARN: 'arn:aws:iam::975049888172:role/tractor-store-gha-deploy'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  diff:
+    name: cdk diff
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install AWS CDK CLI
+        run: npm install -g "aws-cdk@${CDK_VERSION}"
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-infra-${{ hashFiles('infra/**/*.gradle*', 'infra/**/*.kt') }}
+          restore-keys: ${{ runner.os }}-gradle-infra
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          role-session-name: gha-cdk-diff-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: cdk synth
+        run: cdk synth --all
+
+      - name: cdk diff
+        run: cdk diff --all
+
+  deploy:
+    name: cdk deploy
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install AWS CDK CLI
+        run: npm install -g "aws-cdk@${CDK_VERSION}"
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-infra-${{ hashFiles('infra/**/*.gradle*', 'infra/**/*.kt') }}
+          restore-keys: ${{ runner.os }}-gradle-infra
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          role-session-name: gha-cdk-deploy-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: cdk diff (for logs)
+        run: cdk diff --all || true
+
+      - name: cdk deploy
+        run: cdk deploy --all --require-approval never

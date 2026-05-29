@@ -1,159 +1,111 @@
-# Infrastructure Plan — tractor-store-htmx-tailwind
+# Migrate tractor-store from App Runner to EC2 (CDK, account-shared only)
 
-This app runs in the **same AWS account** as `cryptoanalytics` (the shared account in
-`eu-central-1`) but is **fully independent**: its own repo, its own CDK app, its own
-AWS resources, its own deploy pipeline. One AWS account can host any number of independent
-CDK apps — the only discipline required is avoiding name collisions and sharing the handful of
-genuinely account-level resources. This document records how that independence is achieved and
-how to bring the stack up.
+## Context
 
-## How the two apps stay independent
+`tractor-store-htmx-tailwind` runs on App Runner: a single Docker image with NGINX (port 3000) plus two Spring Boot apps (`discover` 8080, `checkout` 8081), built and pushed to ECR (`tractor-store-htmx-tailwind`, `eu-central-1`) by `.github/workflows/build-and-deploy.yml`. AWS auth uses long-lived access keys.
 
-| Dimension | cryptoanalytics | tractor-store | Independent? |
-|---|---|---|---|
-| Git repo | `heerens/cryptoanalytics` | `heerens/tractor-store-htmx-tailwind` | ✅ separate |
-| CDK app | `cryptoanalytics/infra` | `tractor-store-htmx-tailwind/infra` | ✅ separate `cdk.json` + entrypoint |
-| CFN stack names | `RegistryStack-dev`, `Ec2AppStack-dev`, `IamStack-dev`, … | `TractorStore-Registry-dev`, `TractorStore-Ec2App-dev`, `TractorStore-Iam-dev` | ✅ distinct (prefixed) |
-| ECR repo | `crypto-analytics` | `tractor-store-htmx-tailwind` | ✅ separate |
-| EC2 instance / EIP | `crypto-analytics-app` (`t4g.small`) | `tractor-store-app` (`t4g.small`) | ✅ separate host |
-| IAM roles | `crypto-analytics-*` | `tractor-store-*` | ✅ separate |
-| Log group | `/ec2/crypto-analytics-app` | `/ec2/tractor-store-app` | ✅ separate |
-| Domain | `www.squarito.com` | `tractorstore.inauditech.com` | ✅ separate |
-| State stores | DynamoDB + S3 + Cognito | none (self-contained demo) | ✅ no shared data |
+Goal: replicate the cryptoanalytics App-Runner→EC2 migration — single cheap EC2 instance, Caddy fronting the container for TLS via Let's Encrypt, deploys via GitHub Actions + SSM `send-command`. The migration is finalized when the external DNS A record for `tractorstore.inauditech.com` is repointed at the new Elastic IP.
 
-### The two things they *do* share (intentionally)
+Independence requirement: tractor-store and cryptoanalytics share the AWS account only. No cross-stack references, no cross-repo PRs to operate one app or the other. The only resources that must be referenced (not duplicated) are the two genuinely account-level singletons that AWS itself enforces: the CDK bootstrap stack (`hnb659fds`) and the GitHub OIDC provider (`token.actions.githubusercontent.com`). Both are referenced by stable, well-known ARNs — no CDK lookup against the other repo's state.
 
-These are account-level resources that **cannot** be duplicated, so the new stack references
-the existing ones rather than recreating them:
+## What is already in place
 
-1. **CDK bootstrap stack** (`CDKToolkit`, qualifier `hnb659fds`). Bootstrap is per
-   account+region and is meant to be shared by every CDK app. No new bootstrap is needed —
-   `cdk deploy` synthesizes against the existing one. `IamStack.kt` grants the deploy role the
-   right to assume the shared `cdk-hnb659fds-*` roles.
-2. **GitHub OIDC provider** (`token.actions.githubusercontent.com`). AWS allows exactly one
-   OIDC provider per URL per account, and cryptoanalytics already created it. `IamStack.kt`
-   uses `OpenIdConnectProvider.fromOpenIdConnectProviderArn(...)` to **reference** it — creating
-   a second one would fail with "Provider with url ... already exists".
+A CDK app under `infra/` is essentially complete and faithfully implements the "minimum dependency" model. Verified against the goal:
 
-Everything else is namespaced under the `tractor-store` prefix in `infra/.../Config.kt`, so the
-two apps' resources never touch. Deploying or destroying either stack has zero effect on the
-other.
+- `infra/cdk.json`, `infra/build.gradle.kts`, `infra/settings.gradle.kts`, `infra/gradlew` — self-contained Gradle 8.5 / Kotlin 1.9.24 / CDK 2.170.0 project. Distinct package `com.inauditech.tractorstore.infra`.
+- `infra/src/main/kotlin/com/inauditech/tractorstore/infra/Config.kt` — `PROJECT = "tractor-store"`, ECR repo name matches the GH workflow, account ID resolved at synth time from `CDK_DEFAULT_ACCOUNT` / `AWS_ACCOUNT_ID` (never committed).
+- `IamStack.kt:27-32` — references the existing OIDC provider via `OpenIdConnectProvider.fromOpenIdConnectProviderArn(this, "GitHubOidcProvider", "arn:aws:iam::${Config.ACCOUNT}:oidc-provider/token.actions.githubusercontent.com")`. Pure ARN reference — no cross-stack import.
+- `IamStack.kt` — own `tractor-store-gha-deploy` role; trust subject scoped to this repo only; permissions scoped to this app's ECR ARN, account/region-wide EC2 instance wildcard for `ssm:SendCommand` (avoids cross-stack export), and the shared CDK bootstrap roles for the single region.
+- `RegistryStack.kt` — own ECR repo with 8-image lifecycle + AES-256 + `RemovalPolicy.RETAIN`.
+- `Ec2AppStack.kt` — default VPC lookup, own SG (80/443 in), own `tractor-store-app-ec2-instance-role` (only ECR pull + CloudWatch Logs + SSM core — no DynamoDB/S3/Cognito), AL2023 ARM `t4g.small`, 20 GB GP3 encrypted EBS, IMDSv2 required, Elastic IP, `SystemStatusCheckAlarm` with `Ec2InstanceAction.RECOVER`, weekly SSM patch maintenance window. Stack outputs: `Ec2InstanceId`, `Ec2PublicIp`, `Ec2LogGroupName`.
+- `bootstrap.sh` — installs Docker, Caddy (binary tarball, deterministic version), single `app.service` systemd unit binding container `3000` to host loopback only; `dnf-automatic` for daily security updates; kpatch best-effort.
+- `deploy.sh` — pointing the unit at the new image, restarting, health-probing `127.0.0.1:3000` and the public HTTPS endpoint, no blue/green.
+- Stack names prefixed `TractorStore-*` so they cannot collide with cryptoanalytics stacks in the same account+region.
 
-## Stacks in this CDK app (`infra/`)
+The CDK side aligns with the minimum-dependency intent — no edits needed in cryptoanalytics, no cross-stack exports.
 
-- **`TractorStore-Registry-dev`** (`RegistryStack.kt`) — ECR repo `tractor-store-htmx-tailwind`
-  (must match `ECR_REPOSITORY` in the build workflow), keeps the 8 most recent images.
-- **`TractorStore-Ec2App-dev`** (`Ec2AppStack.kt`) — a single `t4g.small` (AL2023, ARM) in the
-  default VPC's public subnet, with an Elastic IP, fronted by **Caddy** (auto Let's Encrypt TLS
-  + reverse proxy). Includes a `StatusCheckFailed_System` auto-recovery alarm and a weekly SSM
-  Patch Manager maintenance window (Sun 04:00 UTC). The instance role is minimal: ECR pull +
-  CloudWatch Logs + SSM core (no DynamoDB/S3/Cognito — this app needs none).
-- **`TractorStore-Iam-dev`** (`IamStack.kt`) — the GitHub Actions OIDC deploy role
-  (`tractor-store-gha-deploy`): push to this app's ECR repo, run `ssm:SendCommand` to trigger a
-  deploy, and assume the shared CDK bootstrap roles.
+## Resolved divergences
 
-## Runtime model
+Two issues between the written CDK and the choices made earlier that need reconciling before deploy:
 
-The app ships as **one container** (see repo `Dockerfile`): two Spring Boot apps (`discover`,
-`checkout`) plus an NGINX "integration" layer that composes them. NGINX listens on **port 3000**
-— that is the single public port. On the EC2 host:
+1. **CPU architecture (Keep ARM, fix the build).** `Ec2AppStack.kt:125,134` use `ARM_64` / `BURSTABLE4_GRAVITON`; `bootstrap.sh:42` downloads `caddy_…_linux_arm64.tar.gz`. The current Docker build is single-arch amd64 — wrong arch for a t4g host. Fix on the **build** side, not the CDK side: switch `build-and-deploy.yml` to buildx and produce a single-arch `linux/arm64` image (no need for multi-arch — only the EC2 host consumes it).
+2. **ECR repo already exists.** `RegistryStack.kt:14-15` will fail on first `cdk deploy` with `RepositoryAlreadyExistsException`. Resolve by performing a one-time `cdk import` of the existing repo into `TractorStore-Registry-dev` before the first regular `cdk deploy`. After import, CDK owns lifecycle/encryption/tags going forward.
 
-```
-Internet ──443──> Caddy (TLS, tractorstore.inauditech.com) ──> 127.0.0.1:3000 ──> container :3000 (NGINX)
-                                                                                      ├─ :8080 discover
-                                                                                      └─ :8081 checkout
-```
+## Remaining work
 
-**No blue/green** (per requirement): `deploy.sh` repoints the systemd unit at the new image and
-restarts it, with a health probe on `127.0.0.1:3000` and a public smoke test over HTTPS. There
-is a brief (seconds) unavailability window during restart — acceptable for this demo.
+### A. Rewrite `.github/workflows/build-and-deploy.yml` (single file edit)
 
-## One-time bring-up
+Replace static keys + amd64 build + no-deploy with OIDC + arm64 build + SSM deploy. Steps:
 
-1. **Build the infra project** (self-contained Gradle project with its own wrapper, Gradle 8.5):
-   ```bash
+- Remove the `Configure AWS credentials` step that uses `secrets.AWS_ACCESS_KEY_ID` / `secrets.AWS_SECRET_ACCESS_KEY`. Replace with `aws-actions/configure-aws-credentials@v4` using `role-to-assume: arn:aws:iam::<ACCOUNT>:role/tractor-store-gha-deploy`, `aws-region: eu-central-1`. Permissions already include `id-token: write`.
+- Add `docker/setup-qemu-action@v3` and `docker/setup-buildx-action@v3` steps.
+- Replace the manual `docker build/push` block with `docker/build-push-action@v6`:
+  - `context: .`, `file: ./Dockerfile`, `platforms: linux/arm64`, `push: true`, `provenance: false`.
+  - `tags`: `${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}` and `…:latest`.
+- Export the image URI to a job output (e.g., `image-outputs.outputs.image`) so the deploy job can consume it.
+- Add a second job `deploy` (`needs: build`) mirroring cryptoanalytics' `.github/workflows/deploy-ec2.yml` deploy job:
+  1. OIDC step (same role).
+  2. Resolve instance ID via `aws cloudformation describe-stacks --stack-name TractorStore-Ec2App-dev --query "Stacks[0].Outputs[?OutputKey=='Ec2InstanceId'].OutputValue"`.
+  3. Base64-encode `infra/src/main/resources/userdata/deploy.sh` and ship it via `aws ssm send-command --document-name AWS-RunShellScript`, then invoke `/opt/app/deploy.sh <IMAGE_URI>`. Shipping deploy.sh fresh each run avoids stale-script drift, matching cryptoanalytics.
+  4. Poll `aws ssm get-command-invocation` until `Success` / `Failed` / `TimedOut`. Fail the job on non-`Success`.
+
+After cutover, delete the `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` repo secrets and the IAM user (if any) that backed them.
+
+### B. Add `.github/workflows/infra-deploy.yml`
+
+Copy from `cryptoanalytics/.github/workflows/infra-deploy.yml`, drop the Cognito post-deploy step. Trigger on `paths: ['infra/**', '.github/workflows/infra-deploy.yml']`. `cdk diff` on PR, `cdk deploy --all` on push to `main`. Uses the same `tractor-store-gha-deploy` OIDC role (which `IamStack.kt` already grants `sts:AssumeRole` on the bootstrap roles + `ssm:GetParameter` on the bootstrap version SSM param).
+
+### C. First-time bring-up (one-time, manual, in this order)
+
+1. **Build infra locally** to catch any compile errors: `cd infra && ./gradlew build`.
+2. **Synth and inspect**: with admin/deployer creds active (`CDK_DEFAULT_ACCOUNT` set automatically by the cdk CLI), `cd infra && cdk synth --all`.
+3. **Adopt the existing ECR repo** via `cdk import`:
+   ```
    cd infra
-   ./gradlew build
+   cdk import TractorStore-Registry-dev
    ```
-2. **Install the AWS CDK CLI** if not already present: `npm i -g aws-cdk`.
-3. **Bootstrap is already done** for this account+region (shared with cryptoanalytics). Nothing
-   to do. (If you ever target a fresh account: `cdk bootstrap aws://<ACCOUNT_ID>/eu-central-1`.)
-4. **Deploy the stacks** (from `infra/`, with admin/deployer credentials for the account):
-   ```bash
-   cdk deploy --all
-   ```
-   The account ID is resolved at synth time from `CDK_DEFAULT_ACCOUNT` (the cdk CLI sets this
-   from your active credentials — nothing to configure). For a bare `./gradlew run` outside the
-   cdk CLI, export `AWS_ACCOUNT_ID` first. The ID is never committed to this public repo.
+   When prompted for the `AWS::ECR::Repository` physical id, supply `tractor-store-htmx-tailwind`. This adopts the existing repo without recreating it.
+4. **Deploy the remaining stacks**: `cdk deploy --all`. Order is handled by `IamStack.addDependency(RegistryStack)` already declared in `App.kt:28`.
+5. Capture the `Ec2PublicIp` output from `TractorStore-Ec2App-dev`. The instance will boot, install Docker + Caddy + the systemd unit; `app.service` retries pulling `:latest` until the first image is pushed in step 6. That retry loop is expected and harmless.
+6. **Push the workflow changes** from §A and §B to `main`. The first run builds + pushes the arm64 image, then SSM-deploys to the new host. `journalctl -u app.service -f` (over `aws ssm start-session`) shows the container starting both Spring apps and NGINX. Caddy provisions a Let's Encrypt cert on first inbound request to port 80 — possible right now because the public IP is reachable, even though DNS still points at App Runner. (Caddy ACME HTTP-01 challenge needs the cert's DNS name to resolve to the host: until the DNS swap, Caddy will keep retrying. That is fine — the cert lands the moment DNS resolves.)
+7. **Verify** before the DNS swap with a Host-header-pinned curl:
+   `curl --resolve tractorstore.inauditech.com:443:<EIP> https://tractorstore.inauditech.com/` (with `-k` if cert hasn't issued yet) plus the same against `/product/...` (discover, 8080 inside container) and `/checkout/...` (checkout, 8081 inside container). This proves NGINX routing inside the container is intact.
+8. **DNS cutover** at your external DNS provider: change the `A` record for `tractorstore.inauditech.com` from the App Runner target to the EIP. Watch for cert issuance via `journalctl -u caddy -f`. Verify in browser.
+9. **Decommission** the App Runner service. Delete the `AWS_*` GitHub repo secrets and the IAM user that backed them.
 
-   Order is handled by the dependency (`Iam` depends on `Registry`). On first deploy the EC2
-   `userData` (`bootstrap.sh`) installs Docker + Caddy and starts the app from the `:latest`
-   image — which won't exist until the first image is pushed (step 6), so the app stays in a
-   retry loop until then. That's fine.
-5. **Point DNS at the instance.** Take the `Ec2PublicIp` output from `TractorStore-Ec2App-dev`
-   and set the external `tractorstore.inauditech.com` A record to it. Caddy issues a Let's
-   Encrypt cert automatically once the record resolves. (You're migrating off the existing
-   App Runner at the same hostname — cut DNS over once the new host is verified healthy.)
-6. **Push the first image** by running the existing `build-and-deploy.yml` (or `docker build`
-   + push manually). The instance picks up `:latest` on its next restart, or trigger a deploy
-   (step below).
+Rollback: revert the DNS A record. App Runner stays up until step 9.
 
-## Wiring up CI/CD (recommended changes to `build-and-deploy.yml`)
+## Critical files
 
-The current workflow uses **static AWS keys** (`secrets.AWS_ACCESS_KEY_ID` /
-`AWS_SECRET_ACCESS_KEY`) and only builds + pushes to ECR — it does not deploy to a host. Two
-recommended upgrades, both optional but cleaner:
+Already written (verify and leave as-is unless the divergences above require touching them):
+- `infra/cdk.json`, `infra/build.gradle.kts`, `infra/settings.gradle.kts`
+- `infra/src/main/kotlin/com/inauditech/tractorstore/infra/{App,Config,IamStack,RegistryStack,Ec2AppStack}.kt`
+- `infra/src/main/resources/userdata/{bootstrap.sh,deploy.sh}`
 
-1. **Switch to OIDC** (drops the static keys; uses the role `IamStack` creates). Replace the
-   `Configure AWS credentials` step with:
-   ```yaml
-   - name: Configure AWS credentials
-     uses: aws-actions/configure-aws-credentials@v4
-     with:
-       role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/tractor-store-gha-deploy
-       aws-region: eu-central-1
-   ```
-   (The workflow already sets `permissions: id-token: write`.)
-2. **Add a deploy step** after the image push to trigger the single-color deploy via SSM:
-   ```yaml
-   - name: Deploy to EC2
-     run: |
-       INSTANCE_ID=$(aws cloudformation describe-stacks \
-         --stack-name TractorStore-Ec2App-dev \
-         --query "Stacks[0].Outputs[?OutputKey=='Ec2InstanceId'].OutputValue" --output text)
-       CMD_ID=$(aws ssm send-command \
-         --instance-ids "$INSTANCE_ID" \
-         --document-name AWS-RunShellScript \
-         --parameters "commands=[\"/opt/app/deploy.sh ${{ steps.build-image.outputs.image }}\"]" \
-         --query "Command.CommandId" --output text)
-       aws ssm wait command-executed --command-id "$CMD_ID" --instance-id "$INSTANCE_ID"
-   ```
+To be added / edited in this work:
+- **Edit**: `.github/workflows/build-and-deploy.yml` — OIDC, arm64 buildx, SSM deploy job.
+- **Add**: `.github/workflows/infra-deploy.yml` — `cdk diff`/`cdk deploy` driver.
 
-An **infra deploy workflow** (mirroring cryptoanalytics' `infra-deploy.yml`: `cdk diff` on PR,
-`cdk deploy` on merge to `main` via the same OIDC role) can be added later if you want infra
-changes to ship from CI rather than locally.
+No changes to: `Dockerfile`, `entrypoint.sh`, `integration/nginx/*`, Spring app code, or anything in cryptoanalytics.
 
-## Layout
+## Reused existing patterns
 
-```
-infra/
-├── cdk.json                       # app = ./gradlew run; env=dev; default bootstrap qualifier
-├── build.gradle.kts               # Kotlin 1.9.24, Java 17, aws-cdk-lib 2.170.0
-├── settings.gradle.kts
-├── gradlew + gradle/wrapper/       # Gradle 8.5 (copied from the discover submodule)
-└── src/main/
-    ├── kotlin/com/inauditech/tractorstore/infra/
-    │   ├── App.kt                  # entrypoint; instantiates the 3 stacks (prefixed names)
-    │   ├── Config.kt               # all names/IDs in one place
-    │   ├── RegistryStack.kt        # ECR repo
-    │   ├── Ec2AppStack.kt          # EC2 + EIP + Caddy + alarms + patch window
-    │   └── IamStack.kt             # OIDC deploy role (references shared OIDC provider)
-    └── resources/userdata/
-        ├── bootstrap.sh            # cloud-init: Docker, Caddy, single app.service
-        └── deploy.sh               # single-color restart + health/smoke probe
-```
+From cryptoanalytics (copied verbatim or near-verbatim where applicable):
+- The `Resolve EC2 instance ID from CFN output` + `Send blue/green deploy command via SSM` + `Poll SSM command until done` job steps in `.github/workflows/deploy-ec2.yml` — drop the blue/green title, keep the ship-script-base64 pattern.
+- The `infra-deploy.yml` shell (jdk17, node22, install CDK CLI, OIDC, `cdk diff`/`cdk deploy --all`) — drop `sync-hosted-ui.sh`.
+- The Caddy systemd unit, dnf-automatic config, and patch maintenance window — already mirrored in this repo's `bootstrap.sh` and `Ec2AppStack.kt`.
+
+## Verification
+
+End-to-end checklist:
+
+- `cd infra && cdk synth --all` succeeds; produces three templates (`TractorStore-Registry-dev`, `TractorStore-Iam-dev`, `TractorStore-Ec2App-dev`).
+- After `cdk import` + `cdk deploy --all`: AWS console shows the EC2 instance Running, status checks Pass; the existing ECR repo now lists `RegistryStack` as its CFN owner.
+- `aws ssm start-session --target <instance-id>` then `journalctl -u app.service` shows the container's `entrypoint.sh` starting `app-discover.jar`, `app-checkout.jar`, then NGINX.
+- A push to `main`: `build-and-deploy.yml` builds an arm64 image, SSM deploy job reports `Success`, image SHA visible in `journalctl -u app.service`.
+- Pre-DNS: `curl --resolve tractorstore.inauditech.com:443:<EIP> https://tractorstore.inauditech.com/` returns 200 (use `-k` if cert is still pending); `/product/...` and `/checkout/...` paths return content from the right Spring app.
+- Post-DNS: `dig tractorstore.inauditech.com +short` returns the EIP; browser session works with a valid Let's Encrypt cert; CloudWatch Logs group `/ec2/tractor-store-app` receives steady-state requests.
 
 ## Cost note
 
-Adds roughly one `t4g.small` (~$12/mo) + an Elastic IP + EBS (20 GB gp3) + minor CloudWatch
-Logs. Independent of the cryptoanalytics instance.
+One `t4g.small` (~$12/mo) + Elastic IP ($0 while attached) + 20 GB GP3 EBS + minor CloudWatch Logs. Independent of cryptoanalytics' bill.

@@ -1,7 +1,9 @@
 package com.inauditech.tractorstore.infra
 
+import software.amazon.awscdk.Aspects
 import software.amazon.awscdk.CfnOutput
 import software.amazon.awscdk.Duration
+import software.amazon.awscdk.IAspect
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.StackProps
@@ -18,6 +20,7 @@ import software.amazon.awscdk.services.ec2.BlockDevice
 import software.amazon.awscdk.services.ec2.BlockDeviceVolume
 import software.amazon.awscdk.services.ec2.CfnEIP
 import software.amazon.awscdk.services.ec2.CfnEIPAssociation
+import software.amazon.awscdk.services.ec2.CfnLaunchTemplate
 import software.amazon.awscdk.services.ec2.EbsDeviceOptions
 import software.amazon.awscdk.services.ec2.EbsDeviceVolumeType
 import software.amazon.awscdk.services.ec2.IVpc
@@ -44,6 +47,7 @@ import software.amazon.awscdk.services.ssm.CfnMaintenanceWindow
 import software.amazon.awscdk.services.ssm.CfnMaintenanceWindowTarget
 import software.amazon.awscdk.services.ssm.CfnMaintenanceWindowTask
 import software.constructs.Construct
+import software.constructs.IConstruct
 
 class Ec2AppStack(scope: Construct, id: String, props: StackProps) : Stack(scope, id, props) {
 
@@ -157,6 +161,19 @@ class Ec2AppStack(scope: Construct, id: String, props: StackProps) : Stack(scope
             .build()
 
         Tags.of(instance).add("Name", Config.EC2_INSTANCE_NAME)
+
+        // The L2 Instance auto-generates a Launch Template name that collided with another
+        // launch template in this shared AWS account (the cryptoanalytics instance uses a
+        // similar default). Override via an Aspect because the exact construct path of the
+        // auto-created LaunchTemplate varies across CDK versions; an Aspect finds any
+        // CfnLaunchTemplate in the stack regardless of where the L2 nests it.
+        Aspects.of(this).add(object : IAspect {
+            override fun visit(node: IConstruct) {
+                if (node is CfnLaunchTemplate) {
+                    node.launchTemplateName = "${Config.EC2_INSTANCE_NAME}-lt"
+                }
+            }
+        })
 
         eip = CfnEIP.Builder.create(this, "AppEip")
             .domain("vpc")

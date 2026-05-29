@@ -3,19 +3,26 @@ name: build-and-deploy
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 env:
-  SERVICE: 'tractor-store-htmx-tailwind'
   AWS_REGION: 'eu-central-1'
   ECR_REPOSITORY: 'tractor-store-htmx-tailwind'
+  EC2_STACK_NAME: 'TractorStore-Ec2App-dev'
+  DEPLOY_ROLE_ARN: 'arn:aws:iam::975049888172:role/tractor-store-gha-deploy'
+
 permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
-  packages: read  # Required to read packages
+  id-token: write
+  contents: read
+  packages: read
+
 jobs:
   build:
-    name: Build 🛠️ and Push to ECR  📦
+    name: Build 🛠️ and push to ECR 📦
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image-outputs.outputs.image }}
+      image_tag: ${{ steps.image-outputs.outputs.image_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,30 +43,124 @@ jobs:
       - name: Build all JARs with Gradle
         run: ./build.sh
 
-      - run: pwd
-      - run: ls -all
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          role-session-name: gha-build-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build, tag, and push arm64 image to Amazon ECR
         id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/arm64
+          push: true
+          provenance: false
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+
+      - name: Export image outputs
+        id: image-outputs
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy 🚀 to EC2 (single-color via SSM)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          role-session-name: gha-deploy-ec2-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Resolve EC2 instance ID from CFN output
+        id: resolve-instance
+        run: |
+          set -euo pipefail
+          INSTANCE_ID=$(aws cloudformation describe-stacks \
+            --stack-name "$EC2_STACK_NAME" \
+            --query "Stacks[0].Outputs[?OutputKey=='Ec2InstanceId'].OutputValue" \
+            --output text)
+          if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" = "None" ]; then
+            echo "Could not resolve EC2 instance ID from stack $EC2_STACK_NAME" >&2
+            exit 1
+          fi
+          echo "instance_id=$INSTANCE_ID" >> "$GITHUB_OUTPUT"
+          echo "Resolved instance: $INSTANCE_ID"
+
+      - name: Send deploy command via SSM
+        id: ssm-send
+        env:
+          INSTANCE_ID: ${{ steps.resolve-instance.outputs.instance_id }}
+          IMAGE_URI: ${{ needs.build.outputs.image }}
+        run: |
+          set -euo pipefail
+          # Ship deploy.sh fresh on every run so the box can't run a stale version.
+          DEPLOY_B64=$(base64 -w0 infra/src/main/resources/userdata/deploy.sh)
+          REMOTE_CMD="echo $DEPLOY_B64 | base64 -d > /opt/app/deploy.sh && chmod +x /opt/app/deploy.sh && /opt/app/deploy.sh $IMAGE_URI"
+          CMD_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --comment "build-and-deploy.yml run ${{ github.run_id }}" \
+            --timeout-seconds 300 \
+            --parameters commands="[\"$REMOTE_CMD\"]" \
+            --query 'Command.CommandId' --output text)
+          echo "command_id=$CMD_ID" >> "$GITHUB_OUTPUT"
+          echo "SSM command: $CMD_ID"
+
+      - name: Poll SSM command until done
+        env:
+          INSTANCE_ID: ${{ steps.resolve-instance.outputs.instance_id }}
+          CMD_ID: ${{ steps.ssm-send.outputs.command_id }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+              --query 'Status' --output text 2>/dev/null || echo Pending)
+            echo "[poll $i] status=$STATUS"
+            case "$STATUS" in
+              Success)
+                echo "--- STDOUT (tail) ---"
+                aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query 'StandardOutputContent' --output text | tail -40
+                exit 0
+                ;;
+              Failed|TimedOut|Cancelled)
+                echo "Deploy failed: status=$STATUS" >&2
+                echo "--- STDOUT ---"
+                aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query 'StandardOutputContent' --output text
+                echo "--- STDERR ---"
+                aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query 'StandardErrorContent' --output text
+                exit 1
+                ;;
+            esac
+            sleep 5
+          done
+          echo "Polling timed out after 5 minutes" >&2
+          exit 1
